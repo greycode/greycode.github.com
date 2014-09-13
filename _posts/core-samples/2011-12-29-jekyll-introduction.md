@@ -81,6 +81,7 @@ Jekyll-bootstrap conveniently provides the base directory format.
 
 ### The Jekyll Application Base Format
 
+
 Jekyll expects your website directory to be laid out like so:
 
     .
