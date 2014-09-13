@@ -1,6 +1,6 @@
 markdown: rdiscount
 permalink: /:year/:month/:title/
 url: http://greycode.github.io/
-author: ÓÚ´ºÌÎ
+author: Grey
 pygments: true
 paginate: 24
