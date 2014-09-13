@@ -4,8 +4,8 @@ layout: page
 comments: yes
 ---
   
-##greyCode    
+##Grey    
 
-个人邮箱:anycode@163.com      
+个人邮箱:anywalker@163.com      
 新浪微博: [http://weibo.com/anycode](http://weibo.com/anycode)      
 github : [https://github.com/greycode](https://github.com/greycode)   
