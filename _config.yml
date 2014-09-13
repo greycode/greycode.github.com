@@ -1,6 +1,6 @@
 markdown: rdiscount
 permalink: /:year/:month/:title/
-url: http://blog.sevenche.com
-author: Jim
+url: http://greycode.github.io/
+author: ÓÚ´ºÌÎ
 pygments: true
 paginate: 24
