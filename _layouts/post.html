@@ -78,8 +78,10 @@ $(window).load(function() {
       var imgs = document.getElementsByTagName('img');
       // Image resizing function
       var resize_image = function(img, newht, newwt) {
-        img.height = newht;
-        img.width  = newwt;
+        //img.height = newht;
+        //img.width  = newwt;
+		$(img).css('max-width','100%')
+		//img.style.max-width=":100%"
         $(img).wrap('<table><tr><td class="tborder"><div class="resized_image"><a href="' + img.src + '" target="_blank"></a></div></td></tr></table>');
         $(img).parent().before('<p>NOTE: This image was resized. To view it full-size, click on the image.</p>');
         //$(img).parent().after('<p style="text-align:right;background:none;margin:0;padding-right:3px">Image resizing script by <a href="http://aetus.net/217/programming/automatically-resize-large-images-with-javascript/">Aetus Designs</a>.</p>');
