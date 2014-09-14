@@ -3,5 +3,5 @@ permalink: /:year/:month/:title/
 name: Grey`s Code
 url: http://greycode.github.io/
 author: Grey
-pygments: true
+highlighter: rouge
 paginate: 24
