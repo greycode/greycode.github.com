@@ -6,7 +6,7 @@ categories:
 tags:
 - [java,guava]
 ---
-<link rel="stylesheet" href="/media/highlight/styles/zenburn.css">
+<link rel="stylesheet" href="/media/highlight/styles/github.css">
 <script src="/media/highlight/highlight.pack.js"></script>
 <script>
 $(document).ready(function() {
@@ -23,15 +23,14 @@ Guava有点类似于Apache Commons库，两者之间的区别在[Stackoverflow](
 
 ###Using Guava
 Maven
-<pre><code class="xml">
-<dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava</artifactId>
-    <version>18.0</version>
-</dependency>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.guava&lt;/groupId&gt;
+    &lt;artifactId&gt;guava&lt;/artifactId&gt;
+    &lt;version&gt;18.0&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre>
-或直接到 [Maven中央库](http://mvnrepository.com/artifact/com.google.guava/guava)下载jar包。
-####Object common methods
+或直接到 [Maven中央库](http://mvnrepository.com/artifact/com.google.guava/guava)下载jar包。  
+Object common methods
 <pre><code class="java">
 public class Employee implements Comparable<Employee> {
 	private String name;
@@ -65,16 +64,16 @@ public class Employee implements Comparable<Employee> {
 			.toString();
 	}
 </code></pre>
-####Lists and MutiMap
+Lists and MutiMap
 <pre><code class="java">
-	List < Map < String, Object> > maps = Lists.newArrayList();
-	List < String > langs = Lists.newArrayList("中文","English","日本語",null);
+	List< Map< String, Object> > maps = Lists.newArrayList();
+	List< String > langs = Lists.newArrayList("中文","English","日本語",null);
 	String lang = Joiner.on("|").useForNull("Unkown").join(langs);
 	// 中文|English|日本語|Unkown
 	System.out.println(lang);                                               
 	
 	// Like Map< Job, Collection< Employee > >
-	Multimap < Job, Employee > multimap = ArrayListMultimap.create();
+	Multimap< Job, Employee > multimap = ArrayListMultimap.create();
 	multimap.put(Job.CEO, new Employee("Tom",45));
 	multimap.put(Job.DESIGNER, new Employee("Jack",24));
 	multimap.put(Job.DEVELOPER, new Employee("Alice", 31));
