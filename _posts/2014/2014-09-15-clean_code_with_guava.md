@@ -82,17 +82,17 @@ Lists and MutiMap
 </code></pre>
 更多代码示例可以关注我的[Glist](https://gist.github.com/greycode/2969fe130d345f87a208)。
 ###More Resource
-1. 首要推荐官方的[WIKI](https://code.google.com/p/guava-libraries/wiki/GuavaExplained?tm=6)，这个最新最全，并发编程网上有[中文的翻译](http://ifeve.com/google-guava/)，但是中文翻译排版很不好，英文不好又想参考官网文档的可以看看，入门不推荐。
+1. 首要推荐官方的[WIKI](https://code.google.com/p/guava-libraries/wiki/GuavaExplained?tm=6)，这个最新最全，并发编程网上有[中文的翻译](http://ifeve.com/google-guava/)，但是中文翻译排版很不好，英文不好又想参考官网文档的可以看看。
 2. OSchina上有几篇翻译不错的教程：  
 　　[Guava 教程1](http://www.oschina.net/translate/beautiful-code-with-google-collections-guava-and-static-imports-part-1)-使用 Google Collections,Guava,static imports 编写漂亮代码  
 　　[Guava 教程2](http://www.oschina.net/translate/diving-into-the-google-guava-library-part-2)-深入探索Google Guava 库  
 　　[Guava 教程3](http://www.oschina.net/translate/functional-java-filtering-and-ordering-with-google-collections-part-3)-Java 的函数式编程，通过 Google Collections 过滤和调用  
 　　[Guava 教程4](http://www.oschina.net/translate/preconditions-multimaps-and-partitioning-with-google-collections-part-4)-条件，多重映射和分片  
-3. “使用Google Guava来编写优雅的代码”系列，对Guava的集合做了简单介绍，适合入门。  
-　[集合1](http://www.letonlife.com/writing-clean-code-with-google-guava-part-4-915)  
-　[集合2](http://www.letonlife.com/writing-clean-code-with-google-guava-part-5-918)  
-　[集合3(Multimap)](http://www.letonlife.com/writing-clean-code-with-google-guava-part-6-multimap-923)  
-　[集合4(BiMap)](http://www.letonlife.com/writing-clean-code-with-google-guava-part-7-bimap-930)  
+3. “使用Google Guava来编写优雅的代码”系列，对Guava的集合做了简单介绍。  
+　　[集合1](http://www.letonlife.com/writing-clean-code-with-google-guava-part-4-915)  
+　　[集合2](http://www.letonlife.com/writing-clean-code-with-google-guava-part-5-918)  
+　　[集合3(Multimap)](http://www.letonlife.com/writing-clean-code-with-google-guava-part-6-multimap-923)  
+　　[集合4(BiMap)](http://www.letonlife.com/writing-clean-code-with-google-guava-part-7-bimap-930)  
 4. 博客园里的童鞋写的一系列[学习笔记](http://www.cnblogs.com/peida/p/Guava.html)。  
 5. 疯狂的菠菜写的一篇[Google Guava 库用法整理](http://macrochen.iteye.com/blog/737058)，使用Guava前后的代码对比很直观，没有接触过的童鞋推荐首先看看这篇。
 6. Speaker Deck上的这个[Guava By Example](https://speakerdeck.com/eneveu/guava-by-example)也是很赞，同样也是对使用Guava前后的代码做了直观的对比。
