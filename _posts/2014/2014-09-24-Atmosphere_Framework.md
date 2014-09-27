@@ -4,7 +4,7 @@ title: Atmosphere Framework
 categories:
 - Java开发
 tags:
-- [java,websocket,framework]
+- [java,websocket,comet,长轮询,服务器推送,framework]
 ---
 <link rel="stylesheet" href="/media/highlight/styles/github.css">
 <script src="/media/highlight/highlight.pack.js"></script>
@@ -31,7 +31,6 @@ Atmosphere所解决的问题，就是在通信的两端提供了一层抽象，�
 　　·在Reverb, Wall Street Journal, GameDuell, VMWare, Atlassian等都有使用。  
 　　·易于扩展（scale）  
 　　·支持云/集群  
-
 Atmosphere可以做到两端（包括Javascript库哦）通吃，其开发的应用完全可以部署到现各种流行的应用服务器如WebLogic, Tomcat, Jetty, GlassFish, Vert.x, Netty Framework 等等。
 <img src="/media/pic2014/Atmosphere -framework.png" alt="">
 ###How to Use
