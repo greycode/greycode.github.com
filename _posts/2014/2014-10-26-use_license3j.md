@@ -197,5 +197,9 @@ public class LicenseDemo {
 
 }
 </code></pre>
-如上通过在Java代码中获取licence的过期日期、版本号等属性进行验证，或者采取其他手段如自动连接验证服务器、启动定时任务等等。
-
+如上通过在Java代码中获取licence的过期日期、版本号等属性进行验证，或者采取其他手段如自动连接验证服务器、启动定时任务等等。  
+如果再配合代码混淆将解密部分的代码处理一下，那么license验证这块功能也算是像回事了。不过有点安全常识的都知道，这些手段都是常规的平民级的，没有不可攻破的墙这道理应该都懂。  
+<div style="font-size:18px;margin:0 0 10px 0;">
+License3j 的Github地址：
+<i class="fa fa-github" style="color:black;margin-right:5px;"></i><a href="https://github.com/verhas/License3j" target="_blank">https://github.com/verhas/License3j</a>
+</div>
