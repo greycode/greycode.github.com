@@ -80,11 +80,11 @@ body>div {
     min-width: 32em;
     max-width: 50em;
     padding: 3em 3em 1.5em;
-    margin: 3em auto;
-    /*background-color: #fff;
+    margin: 1.5em auto;
+    /*background-color: #fff;*/
     -moz-box-shadow: 0 0 10px 0 #cfcfcf;
     -webkit-box-shadow: 0 0 10px 0 #cfcfcf;
-    box-shadow: 0 0 10px 0 #cfcfcf;*/
+    box-shadow: 0 0 10px 0 #cfcfcf;
     border-top: 6px solid #EE0000;
 }
 h1 {
@@ -270,3 +270,6 @@ footer a:hover {
     text-decoration: none;
 }
 
+.title {
+   
+}
