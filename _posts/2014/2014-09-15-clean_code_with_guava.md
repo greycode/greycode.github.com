@@ -93,8 +93,8 @@ Lists and MutiMap
 　　[集合2](http://www.letonlife.com/writing-clean-code-with-google-guava-part-5-918)  
 　　[集合3(Multimap)](http://www.letonlife.com/writing-clean-code-with-google-guava-part-6-multimap-923)  
 　　[集合4(BiMap)](http://www.letonlife.com/writing-clean-code-with-google-guava-part-7-bimap-930)  
-4. 博客园里的童鞋写的一系列[学习笔记](http://www.cnblogs.com/peida/p/Guava.html)。  
-5. 疯狂的菠菜写的一篇[Google Guava 库用法整理](http://macrochen.iteye.com/blog/737058)，使用Guava前后的代码对比很直观，没有接触过的童鞋推荐首先看看这篇。
+4. 博客园里的某一系列[学习笔记](http://www.cnblogs.com/peida/p/Guava.html)。  
+5. ITEYE上的一篇[Google Guava 库用法整理](http://macrochen.iteye.com/blog/737058)，使用Guava前后的代码对比很直观，没有接触过的童鞋推荐首先看看这篇。
 6. Speaker Deck上的这个[Guava By Example](https://speakerdeck.com/eneveu/guava-by-example)也是很赞，同样也是对使用Guava前后的代码做了直观的对比。
 7. Oschina上转载的另一篇不错的文章：[使用 Google Guava 美化你的 Java 代码](http://my.oschina.net/leejun2005/blog/172328#OSC_h3_1)。
 8. 如果以上都满足不了你的求知欲，可以看看[PACKT]出版的这本[Getting Started with Google Guava](https://www.packtpub.com/application-development/getting-started-google-guava)（电子版网上有没有免费下载什么的我才不知道呢~哼！）。
