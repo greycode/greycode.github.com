@@ -5,7 +5,7 @@
 <!-- end of baidu JIA -->
 
 <!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread"></div>
+	<div class="ds-thread" data-thread-key=""></div>
 <script type="text/javascript">
 var duoshuoQuery = {short_name:"greycode"};
 	(function() {

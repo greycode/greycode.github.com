@@ -12,9 +12,11 @@ tags:
 $(document).ready(function() {
   $('h5').css('margin-bottom','10px')
   $('h4').css('margin-bottom','16px')
+  
   $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
   });
+  $('.ds-thread').attr('data-thread-key','8d345a4bbfa60892c00b7eb634b1a919f5604249')
 });
 </script>
 
