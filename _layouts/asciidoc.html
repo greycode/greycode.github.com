@@ -1,0 +1,145 @@
+<link href="/feed/" rel="alternate" title="Grey" type="application/atom+xml" />
+<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="icon" href="/favicon.ico"/>
+<link href='/media/css/googlefonts.css' rel='stylesheet'>
+{{ content }}
+<style type="text/css">
+	.nav-bar {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+	}
+	a.nav-icon:hover {
+		color: #EE0000;
+	}
+	a.nav-icon {
+		text-decoration: none;
+		color: #ccc;
+		font-size: 1.125rem;
+		padding: 0 0.25em;
+	}
+
+	#footer.asciidoc {
+		background-color: #fff;
+		text-align: right;
+	}
+	#footer.asciidoc section.meta {
+		font-size: 0.825rem;
+	}
+	.meta .author, .meta .post-info {
+		margin-bottom: 5px;
+	}
+	#footer.asciidoc a {
+		text-decoration: none;
+		color: #EE0000;
+	}
+	#footer.asciidoc a:visited {
+		color: #B22222;
+		text-decoration: none;
+	}
+
+@media print {
+	.nav-bar {display: none;}
+}
+</style>
+<!-- 浮动菜单 -->
+<div id="nav-bar" class="nav-bar">
+	<a href="/" class="nav-icon" title="Go to homepage">
+		<i class="fa fa-home"></i>
+	</a>
+	<a href="/categories" class="nav-icon" title="Category">
+		<i class="fa fa-bars"></i>
+	</a>
+	<a href="/tags" class="nav-icon" title="Tag Cloud">
+		<i class="fa fa-tags"></i>
+	</a>
+	<a href="/about" class="nav-icon" title="About">
+		<i class="fa fa-user"></i>
+	</a>
+	<a href="/feed" class="nav-icon" title="Subscribe by RSS">
+		<i class="fa fa-rss"></i>
+	</a>
+	
+</div>
+<!-- 底部信息 -->
+<div id="footer" class="asciidoc">
+	<section class="meta">
+	<hr/>
+
+	<div class="author">
+	  <a href="http://greycode.github.io/">{{ site.author }}</a> - Yet another programmer :-)
+	</div>
+	<div class="post-info">
+	<span class="license">
+	  Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">(CC) BY-NC-SA</a>
+	</span>
+	{% if page.categories %}
+	<span class="categories">
+	  in categories
+	  {% for cat in page.categories %}
+	  <a href="/categories/#{{ cat }}" title="{{ cat }}">{{ cat }}</a>&nbsp;
+	  {% endfor %}
+	</span>
+	{% endif %}
+	{% if page.tags %}
+	<span class="tags">
+	  tagged with 
+	  {% for tag in page.tags %}
+	  <a href="/tags/#{{ tag }}" title="{{ tag }}">{{ tag }}</a>&nbsp;
+	  {% endfor %}
+	</span>
+	{% endif %}
+	</div>
+	<span class="time">
+	  <time datetime="{{ page.date | date:"%Y-%m-%d" }}">{{ page.date | date:"%Y-%m-%d" }}</time>
+	</span>
+	</section>
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_fb"></a>
+	<a class="jiathis_button_twitter"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_ydnote"></a>
+	<a href="http://www.jiathis.com/share?uid=2082529" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank">更多</a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2082529" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- DISQUS BEGIN -->
+<div id="disqus_thread"></div>
+<script>
+	var disqus_config = function () {
+		this.page.url = 'http://greycode.github.io/' + '{{ page.url }}'; 
+		this.page.identifier = '{{ page.uuid }}'; 
+	};
+
+	(function() { // DON'T EDIT BELOW THIS LINE
+	var d = document, s = d.createElement('script');
+
+	s.src = '//greycode.disqus.com/embed.js';
+
+	s.setAttribute('data-timestamp', +new Date());
+	(d.head || d.body).appendChild(s);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+<script id="dsq-count-scr" src="//greycode.disqus.com/count.js" async></script>
+<!-- DISQUS END -->
+
+</div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-55157705-1', 'auto');
+  ga('send', 'pageview');
+
+</script>

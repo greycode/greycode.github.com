@@ -1,0 +1,2987 @@
+---
+layout: asciidoc
+title: Spring 快速上手
+uuid: aee7cd27263b482abcef08d4d6a84fd6
+categories:
+- Java开发
+- 快速上手
+tags:
+- [spring,java,上手,指南]
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.4">
+<meta name="author" content="Calvin Yu">
+<title>Spring 快速上手</title>
+<link rel="stylesheet" href="/media/css/asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<style type="text/css">
+    .sect1 + .sect1 {  border-top: 3px double #ebebeb;}
+	.sect2:not(:last-child) {
+		padding-bottom: 30px;
+		margin-bottom: 30px;
+		border-bottom: 1px solid rgb(134, 150, 165);
+	}
+	.literalblock > .content pre, .listingblock > .content pre {
+		background: none;
+		border-width: 1px 0;
+		border-style: dotted;
+		border-color: #bfbfbf;
+
+	}
+	.literalblock > .content pre pre, .listingblock > .content pre pre {
+		border:none;
+	}
+	table.CodeRay td.line-numbers>pre {color:#000;}
+	.exampleblock>.content {
+		box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+	.sidebarblock {
+		/*background:#FAEDC7;*/
+	}
+	.hljs-comment, .diff .hljs-header, .hljs-javadoc {
+		font-family: 'Hiragino Sans GB', 'Hiragino Sans GB W3', 'Microsoft YaHei', Verdana, serif;
+	}
+	ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist {
+		margin-bottom: 0.125em;
+	}
+	*:not(pre)>code {
+	/**
+		padding: .09em .5ex;
+		border: 1px solid gray;
+	*/
+	}
+</style>
+<link href='https://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<style type="text/css">
+    #header, #content, #footnotes, #footer {
+		max-width: 56.5em;
+	}
+	.imageblock>.title {
+		text-align: center;
+	}
+	*:not(pre)>code {
+		/*border-bottom: 1px solid #CECED4;
+		border-right: 1px solid #CECED4;*/
+	}
+	table.frame-all { border-width: 0 }
+	table thead, table tfoot {
+		background: #d15b47;
+
+	}
+	table.grid-all th.tableblock, table.grid-all td.tableblock {
+		border-width: 0;
+	}
+	table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td {
+		color: #fff;
+	}
+	table.grid-all tbody>tr:last-child>th.tableblock, table.grid-all tbody>tr:last-child>td.tableblock, table.grid-all thead:last-child>tr>th.tableblock, table.grid-rows tbody>tr:last-child>th.tableblock, table.grid-rows tbody>tr:last-child>td.tableblock, table.grid-rows thead:last-child>tr>th.tableblock
+	{
+		 border-bottom-width: 1;
+		 border-bottom: 1px solid #d15b47;
+	}
+	*:not(pre)>code {
+		font-family: 'Inconsolata', 'Droid Sans Mono', 'DejaVu Sans Mono',monospace;
+		padding: .2em 1ex;
+		font-weight: 700;
+		font-size: 0.975em;
+	}
+	@media print {
+		a[href^="http:"]:not(.bare):after, a[href^="https:"]:not(.bare):after {
+			content: "";
+		}
+	}
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>Spring 快速上手</h1>
+<div class="details">
+<span id="author" class="author">Calvin Yu</span><br>
+<span id="revdate">since 2015-11-22 ，last-update 2015-12-14</span>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle">目录</div>
+<ul class="sectlevel1">
+<li><a href="#_前言">1. 前言</a></li>
+<li><a href="#_spring_core">2. Spring Core</a>
+<ul class="sectlevel2">
+<li><a href="#_bean的装配">2.1. Bean的装配</a>
+<ul class="sectlevel3">
+<li><a href="#_装配方式">2.1.1. 装配方式</a></li>
+<li><a href="#_bean的自动装配">2.1.2. Bean的自动装配</a></li>
+<li><a href="#_在java中配置bean">2.1.3. 在Java中配置Bean</a></li>
+<li><a href="#_在xml中配置bean">2.1.4. 在XML中配置Bean</a></li>
+<li><a href="#_混合方式配置">2.1.5. 混合方式配置</a></li>
+</ul>
+</li>
+<li><a href="#_高级用法">2.2. 高级用法</a>
+<ul class="sectlevel3">
+<li><a href="#_环境相关的配置">2.2.1. 环境相关的配置</a></li>
+<li><a href="#_有条件约束的bean">2.2.2. 有条件约束的bean</a></li>
+<li><a href="#_解决bean自动装配时的歧义性">2.2.3. 解决Bean自动装配时的歧义性</a></li>
+<li><a href="#_bean的生命周期">2.2.4. Bean的生命周期</a></li>
+<li><a href="#_运行时注入value">2.2.5. 运行时注入value</a></li>
+</ul>
+</li>
+<li><a href="#_spring_aop">2.3. Spring AOP</a>
+<ul class="sectlevel3">
+<li><a href="#_什么是面向切面编程">2.3.1. 什么是面向切面编程</a></li>
+<li><a href="#_使用pointcuts来选择切入点">2.3.2. 使用pointcuts来选择切入点</a></li>
+<li><a href="#_使用注解创建切面">2.3.3. 使用注解创建切面</a></li>
+<li><a href="#_在xml中创建切面">2.3.4. 在XML中创建切面</a></li>
+<li><a href="#_使用aspectj">2.3.5. 使用AspectJ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_web">3. Spring Web</a>
+<ul class="sectlevel2">
+<li><a href="#_创建spring_web应用">3.1. 创建Spring Web应用</a>
+<ul class="sectlevel3">
+<li><a href="#_spring_mvc_起步">3.1.1. Spring MVC 起步</a></li>
+<li><a href="#_编写简单的控制器_controller">3.1.2. 编写简单的控制器（Controller）</a></li>
+<li><a href="#_处理请求参数">3.1.3. 处理请求参数</a></li>
+<li><a href="#_处理表单">3.1.4. 处理表单</a></li>
+</ul>
+</li>
+<li><a href="#_展示web视图">3.2. 展示Web视图</a>
+<ul class="sectlevel3">
+<li><a href="#_视图的解析">3.2.1. 视图的解析</a></li>
+<li><a href="#_创建jsp视图">3.2.2. 创建JSP视图</a></li>
+</ul>
+</li>
+<li><a href="#_spring_mvc的高级用法">3.3. Spring MVC的高级用法</a>
+<ul class="sectlevel3">
+<li><a href="#_备选的spring_mvc配置方式">3.3.1. 备选的Spring MVC配置方式</a></li>
+<li><a href="#_处理multipart表单数据">3.3.2. 处理multipart表单数据</a></li>
+<li><a href="#_处理异常">3.3.3. 处理异常</a></li>
+<li><a href="#_通知型控制器_advising_controllers">3.3.4. 通知型控制器（Advising controllers）</a></li>
+<li><a href="#_在重定向请求中携带数据">3.3.5. 在重定向请求中携带数据</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_backend">4. Spring Backend</a></li>
+<li><a href="#_spring_integration">5. Spring Integration</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_前言"><a class="anchor" href="#_前言"></a>1. 前言</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_core"><a class="anchor" href="#_spring_core"></a>2. Spring Core</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_bean的装配"><a class="anchor" href="#_bean的装配"></a>2.1. Bean的装配</h3>
+<div class="sect3">
+<h4 id="_装配方式"><a class="anchor" href="#_装配方式"></a>2.1.1. 装配方式</h4>
+<div class="paragraph">
+<p>Spring 提供了三种主要的Bean装配方式：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>显示地在XML中配置</p>
+</li>
+<li>
+<p>显示地在Java中配置</p>
+</li>
+<li>
+<p>隐式地通过Bean的自动装配机制配置</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>三种方式的使用依个人喜好，但应尽可能使用自动化配置，减少显示的配置方式的使用。如果必须使用显示配置
+的情况（比如要配置的Bean的源码并非由你维护），使用 类型安全（type-safe）、重构方便的 <strong>JavaConfig</strong> 要好于XML。
+当然，在XML方式提供了非常方便的标签（或namespace）而JavaConfig中却没有等价实现的情况，可以使用XML。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bean的自动装配"><a class="anchor" href="#_bean的自动装配"></a>2.1.2. Bean的自动装配</h4>
+<div class="paragraph">
+<p>Spring对Bean的自动装配主要通过 <strong>“Component Scanning”</strong> 和 <strong>“Autowiring”</strong> 来完成，其实分别指 <code>@ComponentScan</code> 和 <code>@Autowired</code> 注解。</p>
+</div>
+<div class="paragraph">
+<p>给类加上 <code>@Component</code> 注解就可以创建一个能被组件扫描机制（Component Scanning）发现的Bean：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package org.calvin.springfast;
+import org.springframework.stereotype.Component;
+
+@Component                                                           <i class="conum" data-value="1"></i><b>(1)</b>
+public class SgtPeppers implements CompactDisc {
+  private String title = "Sgt. Pepper's Lonely Hearts Club Band";
+  private String artist = "The Beatles";
+
+  public void play() {
+    System.out.println("Playing " + title + " by " + artist);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>这种情况下该bean的ID就是首字母小写的类名，也可以通过使用 <code>@Component("sgtPeppers")</code> 显示赋一个ID</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>不过组件扫描默认是不开启的，需要在Spring中配置一下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package org.calvin.springfast;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan                                                       <i class="conum" data-value="1"></i><b>(1)</b>
+public class CDPlayerConfig {
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@ComponentScan</code> 用于配置Spring的组件扫描功能</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如上不加额外配置的情况，<code>@ComponentScan</code> 默认只扫描当前配置类所在package及其子package下加了 <code>@Component</code> 注解的类。
+等价的XML配置方式：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"&gt;
+
+  &lt;context:component-scan base-package="org.calvin.springfast" /&gt;
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果需要扫描其他的package，可以如下配置：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 直接使用ComponentScan的value属性
+@Configuration
+@ComponentScan("org.calvin.springfast.other")
+public class CDPlayerConfig { }
+
+// 或者显示地配置basePackages
+@Configuration
+@ComponentScan(basePackages="org.calvin.springfast.other")
+public class CDPlayerConfig { }
+
+// 对于需要配置多个package的情况
+@Configuration
+@ComponentScan(basePackages={"org.calvin.springfast.one", "org.calvin.springfast.two"})
+public class CDPlayerConfig { }
+
+// 或者使用更加类型安全的方式配置
+@Configuration
+@ComponentScan(basePackageClasses={CDPlayer.class, DVDPlayer.class})
+public class CDPlayerConfig { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>对于Bean中依赖的其他Bean，可以使用 <code>@Autowired</code> 装配，@Autowired可以加到构造函数、Setter方法或类变量之上，
+如果没有找到匹配的Bean，Spring 会抛出异常，当然可以通过 <code>@Autowired(required=false)</code> 来避免，
+但这么做@Autowired注解的依赖可能为null，需要注意检查：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Autowired(required=false)
+public CDPlayer(CompactDisc cd) {
+  this.cd = cd;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_在java中配置bean"><a class="anchor" href="#_在java中配置bean"></a>2.1.3. 在Java中配置Bean</h4>
+<div class="paragraph">
+<p>自动配置虽然很方便，不过在有些场景下，比如说要装配一个来自第三方库的组件，显然不可能或不适合在其源码上加上@Component和@Autowired，
+这种情况适合使用显示地配置方式。</p>
+</div>
+<div class="paragraph">
+<p>JavaConfig 的方式因为类型安全、重构友好、更加强大，相对XML是更好的选择。注意不要在JavaConfig的配置代码中掺入业务逻辑相关的代码。</p>
+</div>
+<div class="paragraph">
+<p>使用 <code>@Configuration</code> 注解就可以创建一个JavaConfig的配置类，正如之前示例代码中那样，而要在JavaConfig配置类中创建Bean可以如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean                                                                <i class="conum" data-value="1"></i><b>(1)</b>
+public CompactDisc sgtPeppers() {                                    <i class="conum" data-value="2"></i><b>(2)</b>
+  return new SgtPeppers();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@Bean</code> 注解告诉Spring该方法所返回的对象应该在Spring 的ApplicationContext中注册为Bean。</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>该Bean的ID默认为该方法的名称，也可以使用 <code>@Bean(name="yourBeanName")</code> 为Bean显示设置ID。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在JavaConfig方式下注入依赖直接调用创建Bean的方法即可：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public CDPlayer cdPlayer() {
+  return new CDPlayer(sgtPeppers());                                 <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+@Bean
+public CDPlayer anotherCDPlayer() {
+  return new CDPlayer(sgtPeppers());
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>因为sgtPeppers方法添加了 <code>@Bean</code> 注解，所有对该方法的调用都被Spring拦截并确保返回同一个Bean对象。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>除了使用方法注入，还可以使用参数的方式：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public CDPlayer cdPlayer(CompactDisc compactDisc) {                  <i class="conum" data-value="1"></i><b>(1)</b>
+  return new CDPlayer(compactDisc);
+}
+// ..或者
+@Bean
+public CDPlayer cdPlayer(CompactDisc compactDisc) {
+  CDPlayer cdPlayer = new CDPlayer(compactDisc);
+  cdPlayer.setCompactDisc(compactDisc);
+  return cdPlayer;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>CompactDisc会被Spring自动注入为之前声明的Bean</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_在xml中配置bean"><a class="anchor" href="#_在xml中配置bean"></a>2.1.4. 在XML中配置Bean</h4>
+<div class="paragraph">
+<p>XML 已经不是首选的配置方式，不过在某些特殊场景下（比如遗留代码等）还是会用到。</p>
+</div>
+<div class="paragraph">
+<p>在XML中配置一个Bean，可以如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context"&gt;
+  &lt;!-- configuration details go here --&gt;
+
+  &lt;!--
+    BlankDisc 的构造函数为 :
+       public BlankDisc(String title, String artist, List&lt;String&gt; tracks) { }
+     --&gt;
+  &lt;bean class="org.calvin.springfast.BlankDisc"&gt;                     <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;constructor-arg value="Sgt. Pepper's Lonely Hearts Club Band" /&gt;
+    &lt;constructor-arg ref="compactDisc" /&gt;
+    &lt;constructor-arg&gt;
+      &lt;list&gt;
+      &lt;value&gt;Sgt. Pepper's Lonely Hearts Club Band&lt;/value&gt;
+      &lt;value&gt;With a Little Help from My Friends&lt;/value&gt;
+      &lt;ref bean="sgtPeppers" /&gt;
+      &lt;!-- ...other tracks omitted for brevity... --&gt;
+      &lt;/list&gt;
+    &lt;/constructor-arg&gt;
+    &lt;property name="compactDisc" ref="compactDisc" /&gt;
+    &lt;property name="artist" value="The Beatles" /&gt;
+    &lt;property name="tracks"&gt;
+      &lt;set&gt;
+        &lt;value&gt;Getting Better&lt;/value&gt;
+        &lt;value&gt;Fixing a Hole&lt;/value&gt;
+        &lt;!-- ...other tracks omitted for brevity... --&gt;
+      &lt;/set&gt;
+    &lt;/property&gt;
+  &lt;/bean&gt;
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>该bean没有显示设置ID，所以其ID由Spring设置为 <code>org.calvin.springfast.SgtPeppers#0</code> 。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>这一个示例展示了如何配置一个Bean及其相关的依赖，包括构造函数和属性的注入。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_混合方式配置"><a class="anchor" href="#_混合方式配置"></a>2.1.5. 混合方式配置</h4>
+<div class="paragraph">
+<p>XML和JavaConfig各有各的适用场景，也可能会存在两种方式同时使用的情况，这样要么在JavaConfig的配置类中引入XML配置文件，
+要么在XML配置文件中引入JavaConfig的配置类，无论哪种方式，其实都是将配置好的Bean在Spring容器中注册。</p>
+</div>
+<div class="paragraph">
+<p>JavaConfig中通过 <code>@Import</code> 和 <code>@ImportResource</code> 注解来分别引入其他的配置类和配置文件。</p>
+</div>
+<div class="paragraph">
+<p>例如存在：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+public class CDConfig {
+  @Bean
+  public CompactDisc compactDisc() {
+    return new SgtPeppers();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>那么可以在另外一个配置类中这样引入：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@Import(CDConfig.class)
+public class CDPlayerConfig {
+  @Bean
+  public CDPlayer cdPlayer(CompactDisc compactDisc) {                <i class="conum" data-value="1"></i><b>(1)</b>
+    return new CDPlayer(compactDisc);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>因为已经使用@Import引入CDConfig配置类，所以这里的compactDisc将注入Bean，不会为空。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>多个配置类的情况：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@Import({CDPlayerConfig.class, CDConfig.class})
+public class SoundSystemConfig {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>需要引入XML配置文件的情况：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@Import(CDPlayerConfig.class)
+@ImportResource("classpath:cd-config.xml")                           <i class="conum" data-value="1"></i><b>(1)</b>
+public class SoundSystemConfig {
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>引入cd-config.xml后，其中定义的Bean可以注入到CDPlayerConfig中</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>我们知道在XML中引入其他XML配置文件使用如 <code>&lt;import resource="cd-config.xml" /&gt;</code> ，
+而如果要在XML中引入JavaConfig的配置类，只需在XML中将该配置类配置为Bean标签：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:c="http://www.springframework.org/schema/c"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+  &lt;bean class="org.calvin.springfast.CDConfig" /&gt;                    <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;import resource="cdplayer-config.xml" /&gt;                          <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>引入JavaConfig配置类</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>引入另外一个XML配置文件</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_高级用法"><a class="anchor" href="#_高级用法"></a>2.2. 高级用法</h3>
+<div class="sect3">
+<h4 id="_环境相关的配置"><a class="anchor" href="#_环境相关的配置"></a>2.2.1. 环境相关的配置</h4>
+<div class="paragraph">
+<p>Spring支持配置与环境相关的Bean，也就是在某些环境下这些Bean可用，而在其他环境下不可用，
+比如与数据源相关的Bean，开发环境和生产环境所使用的完全不同的情况。</p>
+</div>
+<div class="paragraph">
+<p>在Java配置方式下使用的是 <code>@Profile</code> 注解，该注解在Spring 3.1 只能放在类上，3.2之后可以跟 <code>@Bean</code>
+注解一起放到方法上：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// @Profile 加到配置类上，则在该配置类中配置的所有的Bean，只在profile激活时才创建
+@Configuration
+@Profile("prod")
+public class ProductionProfileConfig {
+  @Bean
+  public DataSource dataSource() {
+    JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
+    jndiObjectFactoryBean.setJndiName("jdbc/myDS");
+    jndiObjectFactoryBean.setResourceRef(true);
+    jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);
+    return (DataSource) jndiObjectFactoryBean.getObject();
+  }
+}
+
+// @Profile 配合 @Bean 加到方法上，相关方法生成的Bean只在其所属Profile激活时加载
+@Configuration
+public class DataSourceConfig {
+
+  @Bean(destroyMethod="shutdown")
+  @Profile("dev")
+  public DataSource embeddedDataSource() {
+    return new EmbeddedDatabaseBuilder()
+      .setType(EmbeddedDatabaseType.H2)
+      .addScript("classpath:schema.sql")
+      .addScript("classpath:test-data.sql")
+      .build();
+  }
+
+  @Bean
+  @Profile("prod")
+  public DataSource jndiDataSource() {
+    JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
+    jndiObjectFactoryBean.setJndiName("jdbc/myDS");
+    jndiObjectFactoryBean.setResourceRef(true);
+    jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);
+    return (DataSource) jndiObjectFactoryBean.getObject();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在XML中配置只需要使用 <code>&lt;beans profile="dev"&gt;..&lt;/beans&gt;</code> 将相关代码包括起来：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+  xmlns:jee="http://www.springframework.org/schema/jee"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/jee
+    http://www.springframework.org/schema/jee/spring-jee.xsd
+    http://www.springframework.org/schema/jdbc
+    http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+  &lt;beans profile="dev"&gt;
+    &lt;jdbc:embedded-database id="dataSource"&gt;
+    &lt;jdbc:script location="classpath:schema.sql" /&gt;
+    &lt;jdbc:script location="classpath:test-data.sql" /&gt;
+    &lt;/jdbc:embedded-database&gt;
+  &lt;/beans&gt;
+
+  &lt;beans profile="qa"&gt;
+    &lt;bean id="dataSource"
+      class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+      p:url="jdbc:h2:tcp://dbserver/~/test"
+      p:driverClassName="org.h2.Driver"
+      p:username="sa"    p:password="password"
+      p:initialSize="20" p:maxActive="30" /&gt;
+  &lt;/beans&gt;
+
+  &lt;beans profile="prod"&gt;
+    &lt;jee:jndi-lookup id="dataSource" jndi-name="jdbc/myDatabase"
+      resource-ref="true" proxy-interface="javax.sql.DataSource" /&gt;
+  &lt;/beans&gt;
+
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spring通过两个属性 <code>spring.profiles.active</code> 和 <code>spring.profiles.default</code> 来决定应该激活的profile，
+spring.profiles.active 的值优先于 spring.profiles.default ，如果两者都没有赋值，则不激活任何profile，
+也就是只有非profile中的Bean才会被创建。</p>
+</div>
+<div class="ulist">
+<div class="title">可以通过许多途径设置这两个属性</div>
+<ul>
+<li>
+<p>作为 DispatcherServlet 的初始化参数</p>
+</li>
+<li>
+<p>作为web应用的上下文参数</p>
+</li>
+<li>
+<p>作为JNDI记录</p>
+</li>
+<li>
+<p>作为环境变量</p>
+</li>
+<li>
+<p>作为JVM的系统属性</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>比如在 <strong>web.xml</strong> 中：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.5" &gt;
+...
+&lt;context-param&gt;
+  &lt;param-name&gt;spring.profiles.default&lt;/param-name&gt;                   <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;param-value&gt;dev&lt;/param-value&gt;
+&lt;/context-param&gt;
+
+&lt;servlet&gt;
+  &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;
+  &lt;servlet-class&gt;
+    org.springframework.web.servlet.DispatcherServlet
+  &lt;/servlet-class&gt;
+  &lt;init-param&gt;
+    &lt;param-name&gt;spring.profiles.default&lt;/param-name&gt;                 <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;param-value&gt;dev&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>作为web应用的上下文参数</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>作为DispatcherServlet的初始化参数</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_有条件约束的bean"><a class="anchor" href="#_有条件约束的bean"></a>2.2.2. 有条件约束的bean</h4>
+<div class="paragraph">
+<p>Spring 4 新增的 <code>@Conditional</code> 注解可用来添加到@Bean注解的方法上，并在特定条件满足时才创建该Bean。
+@Conditional注解只接受实现了Conditional接口的类：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface Condition {
+  boolean matches(ConditionContext ctxt,  AnnotatedTypeMetadata metadata);
+}
+// ... 只有在属性magic不为空时满足条件
+public class MagicExistsCondition implements Condition {
+  public boolean matches( ConditionContext context, AnnotatedTypeMetadata metadata) {
+    Environment env = context.getEnvironment();
+    return env.containsProperty("magic");
+  }
+}
+//..
+@Bean
+@Conditional(MagicExistsCondition.class)                             <i class="conum" data-value="1"></i><b>(1)</b>
+public MagicBean magicBean() {
+  return new MagicBean();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>MagicBean只有在属性magic不为空时才会创建</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_解决bean自动装配时的歧义性"><a class="anchor" href="#_解决bean自动装配时的歧义性"></a>2.2.3. 解决Bean自动装配时的歧义性</h4>
+<div class="paragraph">
+<p>我们知道Bean的自动装配是根据类型匹配的，如果是一个接口就可能就会存在多个实现类的情况，
+这种情况下Bean的自动装配会失效并抛出异常 <code>NoUniqueBeanDefinitionException</code> 。</p>
+</div>
+<div class="paragraph">
+<p>如果使用 <code>@Autowired</code> 会匹配到多个Bean，可以使用 <code>@Primary</code> 注解来消除歧义。@Primary注解的Bean总是被优先匹配。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 加入存在如下需要自动装配实现了Dessert接口的Bean
+@Autowired
+public void setDessert(Dessert dessert) {
+  this.dessert = dessert;
+}
+
+// @Primary 可以跟 @Component 一起使用
+@Component
+@Primary
+public class IceCream implements Dessert { ... }
+
+// 当然也可以跟 @Bean 方法一起
+@Bean
+@Primary
+public Dessert iceCream() {
+  return new IceCream();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果使用XML：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="iceCream" class="com.desserteater.IceCream" primary="true" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>@Primary的问题是如果存在多个添加了该注解的Bean，那么在匹配时还是会存在歧义性。</p>
+</div>
+<div class="paragraph">
+<p>可以使用 <code>@Qualifier</code> 配合 <code>@Autowired</code> 可以自动装配一个唯一的Bean，
+@Qualifier 注解的参数为Bean的唯一限定符，通常也就是Bean的ID或者是标注在Bean上的@Qualifier的参数。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Autowired
+@Qualifier("cold")
+public void setDessert(Dessert dessert) {
+  this.dessert = dessert;
+}
+
+// 以下为可能匹配到的情况
+
+@Bean
+public Dessert cold() { ... }
+
+@Bean
+@Qualifier("cold")
+public Dessert iceCream() { ... }
+
+@Component
+@Qualifier("cold")
+public class IceCream implements Dessert { ... }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>除了@Qualifier和@Autowired的组合，还可以直接使用 <code>@Resource(name="beanId")</code> 。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bean的生命周期"><a class="anchor" href="#_bean的生命周期"></a>2.2.4. Bean的生命周期</h4>
+<div class="paragraph">
+<p>默认情况下Spring创建的Bean是单例模式，在整个应用生命周期中不管被使用、被注入多少次，始终是同一个实例。
+Spring也支持其他生命周期范围的Bean：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>Singleton</em></strong> ，整个应用中只有一个实例</p>
+</li>
+<li>
+<p><strong><em>Prototype</em></strong> ，每次在被注入或者从Spring应用上下文（application context）中获取时使用新创建的实例</p>
+</li>
+<li>
+<p><strong><em>Session</em></strong> ，在Web应用中使用，在每个会话范围内只有唯一的实例</p>
+</li>
+<li>
+<p><strong><em>Request</em></strong> ，在Web应用中使用，在每个请求范围内只有唯一的实例</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>可以使用 <code>@Scope</code> 注解配合 <em>@Component</em> 和 <em>@Bean</em> 来配置Bean的生命周期：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)                      <i class="conum" data-value="1"></i><b>(1)</b>
+public class Notepad { ... }
+// 或者
+@Bean
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public Notepad notepad() {
+  return new Notepad();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>也可以使用 <code>@Scope("prototype")</code> ，使用SCOPE_PROTOTYPE常量可以减少可能的拼写错误</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在XML中：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="notepad" class="com.myapp.Notepad" scope="prototype" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在Web应用中对于需要在请求或会话中保存状态的Bean来说，全局的单例模式不适用，比如说一个购物车Bean，
+一个生命周期为会话范围的Bean会更合适。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Component
+@Scope(
+  value=WebApplicationContext.SCOPE_SESSION,                         <i class="conum" data-value="1"></i><b>(1)</b>
+  proxyMode=ScopedProxyMode.INTERFACES)
+public ShoppingCart cart() { ... }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>常量 <code>SCOPE_SESSION</code> 是从 <code>WebApplicationContext</code> 中获取的</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>这样Spring对于每个会话都会创建一个ShoppingCart的实例， 注意 @Scope 的 proxyMode 属性，
+将一个会话范围的Bean注入到另一个单例模式的Bean中时，注入到单例Bean中的其实是Spring生成的一个代理，
+该代理暴露会话范围Bean一样的方法，只是将具体的请求转发给实际的会话Bean实例。</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/media/img/spring-session-bean-proxy.png" alt="Scoped-proxies" width="695" height="347">
+</div>
+<div class="title">Figure 1. 会话/请求范围的Bean采用代理注入的方式</div>
+</div>
+<div class="paragraph">
+<p>如上代码中如果ShoppingCart是接口那么proxyMode应为 <code>ScopedProxyMode.INTERFACES</code> ，
+如果是具体的类则必须为 <code>ScopedProxyMode.TARGET_CLASS</code> （这种情况下代理类是通过 <strong>CGLIB</strong> 生成的）。</p>
+</div>
+<div class="paragraph">
+<p>在XML下等效的配置为：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="cart" class="com.myapp.ShoppingCart" scope="session"&gt;
+  &lt;aop:scoped-proxy /&gt;                                               <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;!-- &lt;aop:scoped-proxy proxy-target-class="false" /&gt;  --&gt;          <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/bean&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>等效于@Scope中的proxyMode属性，默认是采用CGLIB生成基于目标类的代理</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>把 <code>proxy-target-class</code> 设为false则采用基于接口生成的代理</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_运行时注入value"><a class="anchor" href="#_运行时注入value"></a>2.2.5. 运行时注入value</h4>
+<div class="paragraph">
+<p>对在运行时值的注入，Spring提供了两种方式：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>属性（Property）占位符</p>
+</li>
+<li>
+<p>SpEL 表达式</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>对于属性文件，最简单的使用方式就是先加载，然后再从 <code>Environment</code> 中获取其中属性的值：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@PropertySource("classpath:/com/soundsystem/app.properties")         <i class="conum" data-value="1"></i><b>(1)</b>
+public class ExpressiveConfig {
+
+  @Autowired
+  Environment env;
+
+  @Bean
+  public BlankDisc disc() {
+    return new BlankDisc(
+      env.getProperty("disc.title"), env.getProperty("disc.artist"));
+  }
+}
+
+// .. app.properties 的内容如下
+disc.title=Sgt. Peppers Lonely Hearts Club Band
+disc.artist=The Beatles</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>使用 <code>@PropertySource</code> 将指定位置的属性文件数据加载到 <code>Environment</code> 中</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>Environment</code> 中提供了许多方便的方法用来获取属性文件中的值：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 属性不存在时使用默认值
+env.getProperty("disc.artist", "U2")
+// 将属性的值转为特定的类型
+int connectionCount =
+  env.getProperty("db.connection.count", Integer.class, 30);
+// 属性不存在时会抛出异常 IllegalStateException
+env.getRequiredProperty("disc.title");
+// 检查属性是否存在
+boolean titleExists = env.containsProperty("disc.title");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>除了Environment，另一种使用属性的方式就是用属性占位符（${ &#8230;&#8203; }）在运行时动态注入，
+XML方式下直接用就可以：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="sgtPeppers" class="soundsystem.BlankDisc"
+      c:_title="${disc.title}" c:_artist="${disc.artist}" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>但在Java中需要使用 <code>@Value</code> 注解：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public BlankDisc(
+  @Value("${disc.title}") String title,
+  @Value("${disc.artist}") String artist) {
+  this.title = title;
+  this.artist = artist;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>但要属性占位符生效，需要配置一个 <code>PropertyPlaceholderConfigurer</code> 或者 <code>PropertySourcesPlaceholderConfigurer</code>
+的Bean，Spring 3.1之后的最好使用后者 ，因为可以从Environment中解析属性值（从属性文件中加载的）。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public
+static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+  return new PropertySourcesPlaceholderConfigurer();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>XML中等效的配置为：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"&gt;
+
+    &lt;context:property-placeholder /&gt;
+
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_aop"><a class="anchor" href="#_spring_aop"></a>2.3. Spring AOP</h3>
+<div class="sect3">
+<h4 id="_什么是面向切面编程"><a class="anchor" href="#_什么是面向切面编程"></a>2.3.1. 什么是面向切面编程</h4>
+<div class="ulist">
+<div class="title">面向切面编程中的一些概念</div>
+<ul>
+<li>
+<p><strong>ADVICE</strong> （通知），通知定义了切面是什么（ <em>what</em> ）和什么时候使用（ <em>when</em> ），
+Spring中可以使用五种类型的通知：</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Before —— 在方法调被用前调用通知</p>
+</li>
+<li>
+<p>After —— 在方法完成后调用通知，无论方法是否成功</p>
+</li>
+<li>
+<p>After-returning —— 在方法成功执行后调用通知</p>
+</li>
+<li>
+<p>After-throwing —— 在方法抛出异常后调用通知</p>
+</li>
+<li>
+<p>Around —— 包裹被通知的方法，可以在方法调用前后执行自定义的行为</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>JOIN POINTS</strong> （连接点），在应用执行过程中能够插入切面的一个点，这个点可以是调用方法时、
+抛出异常时、甚至修改一个字段时</p>
+</li>
+<li>
+<p><strong>POINTCUTS</strong> （切点），切点定义了切面的“何处”（ <em>where</em> ），切点会匹配通知所需要织入的一个或多个连接点</p>
+</li>
+<li>
+<p><strong>ASPECTS</strong> （切面），切面是通知和切点的结合——它是什么，在何时何处完成其功能</p>
+</li>
+<li>
+<p><strong>INTRODUCTIONS</strong> （引入），引入允许我们向已有的类添加新属性或方法</p>
+</li>
+<li>
+<p><strong>WEAVING</strong> （织入），织入是将切面应用到目标对象来创建新的代理对象的过程。目标对象的生命周期中有多个点可以织入：</p>
+<div class="ulist">
+<ul>
+<li>
+<p>编译时——切面在目标类编译时织入，需要使用特殊的编译器比如AspectJ的织入编译器。</p>
+</li>
+<li>
+<p>类加载时——切面在目标类加载到JVM时织入，需要使用特殊的类加载器比如AspectJ 5中的 LTW。</p>
+</li>
+<li>
+<p>运行时——切面在应用运行的某个时间织入，AOP容器会为目标对象动态创建一个代理，Spring AOP就是这种方式</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Spring支持4种类型的AOP</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Spring中经典的基于代理的AOP</p>
+</li>
+<li>
+<p>纯POJO的切面</p>
+</li>
+<li>
+<p>@AspectJ注解驱动的切面</p>
+</li>
+<li>
+<p>注入式AspectJ切面</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>前三种是Spring 自身对AOP实现的变体，Spring AOP是基于动态代理构建的，因此只限于对方法的拦截。</p>
+</div>
+<div class="paragraph">
+<p>注意@AspectJ注解并不是基于AspectJ的，底层还是Spring基于代理的实现，只不过是Spring从AspectJ借鉴而来，
+从而提供与AspectJ一致的编程模型。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_使用pointcuts来选择切入点"><a class="anchor" href="#_使用pointcuts来选择切入点"></a>2.3.2. 使用pointcuts来选择切入点</h4>
+<div class="paragraph">
+<p>在Spring AOP中，需要使用AspectJ的切点表达式语言来定义切点。Spring只支持AspectJ切点指示器（pointcut designator）
+的一个子集：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 70%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">AspectJ 指示器</th>
+<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-center valign-middle">通配符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">args()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为执行中的方法，且方法参数为指定的类型（动态切入）</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@args()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为执行中的方法，且方法参数的注解为指定的注解类型</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">execution()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">匹配的连接点为执行中的方法</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">this()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为AOP代理类所代理Bean的引用为指定类型的类</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">target()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为当前目标对象（被代理对象）类型中的执行方法（只匹配类型，不匹配接口）</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@target()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为当前目标对象类型的执行方法，其中目标对象持有指定的注解</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">within()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为指定类型的对象中的执行方法</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@within()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配的连接点为带有指定注解的类型的对象中的执行方法（注解在类型上）</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限定匹配带有指定注解的当前执行方法（注解在方法上）</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>execution()指示器是唯一的执行匹配，其他的都是限定匹配。
+所以execution()是编写切点时主要的指示器，其他的用来做限定。</p>
+</div>
+<div class="paragraph">
+<p>假如存在：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package springfast;
+public interface Performance {
+  public void perform();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>那么拦截 Performance 接口 perform 方法的 pointcut 表达式如下：</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/media/img/pointcut-demo.png" alt="Scoped-proxies" width="692" height="171">
+</div>
+<div class="title">Figure 2. 使用pointcut表达式拦截Performance的perform方法</div>
+</div>
+<div class="paragraph">
+<p>返回值处的星号（*）和参数列表处的双点号（..）表示任意的返回值和参数。</p>
+</div>
+<div class="paragraph">
+<p>如果想限定拦截的范围，比如当且仅当如上方法在包 <code>org.calvin.springfast</code> 中调用时：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">execution(* springfast.Performance.perform(..))
+        &amp;&amp; within(org.calvin.springfast.*))                          <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>这里用 &amp;&amp; 来表示 <em>and</em> 的关系，类似的可以使用 || 表示 <em>or</em> ， ! 表示 <em>not</em> 。
+因为&amp;&amp;在XML中有特殊含义，所以可使用 and 代替 &amp;&amp;，其他也类似。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>除了上面表格中的指示器，Spring 还引入了新的 <code>bean()</code> 指示器。
+bean() 使用 Bean ID或Bean名称作为参数来限制切点只匹配特定的bean：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">execution(* springfast.Performance.perform())
+          and bean('woodstock')</code></pre>
+</div>
+</div>
+更多关于pointcut表达式的描述可以参考
+<a target="_blank" style="text-decoration:none" href="http://blog.csdn.net/wangpeng047/article/details/8556800">
+<i class="fa fa-external-link" style="margin-right:0.3em"></i>这里</a>。
+</div>
+<div class="sect3">
+<h4 id="_使用注解创建切面"><a class="anchor" href="#_使用注解创建切面"></a>2.3.3. 使用注解创建切面</h4>
+<div class="paragraph">
+<p>在Spring中使用注解可以很容易地创建一个切面：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package org.calvin.springfast;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+
+@Aspect                                                              <i class="conum" data-value="1"></i><b>(1)</b>
+public class Audience {
+
+  @Before("execution(** springfast.Performance.perform(..))")           <i class="conum" data-value="2"></i><b>(2)</b>
+  public void silenceCellPhones() {
+    System.out.println("Silencing cell phones");
+  }
+
+  @Before("execution(** springfast.Performance.perform(..))")
+  public void takeSeats() {
+    System.out.println("Taking seats");
+  }
+
+  @AfterReturning("execution(** springfast.Performance.perform(..))")
+  public void applause() {
+    System.out.println("CLAP CLAP CLAP!!!");
+  }
+
+  @AfterThrowing("execution(** springfast.Performance.perform(..))")
+  public void demandRefund() {
+    System.out.println("Demanding a refund");
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@Aspect</code> 注解将该POJO类变为一个切面</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>@Before</code> 注解的方法为一个Advice，在perform方法之前执行</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>上面方法中添加的通知注解指明该方法调用的时机，AspectJ一共定义了五种通知注解：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">注解</th>
+<th class="tableblock halign-left valign-top">通知</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@After</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">（添加该注解的方法）在被拦截方法执行完毕或抛出异常后调用</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@AfterReturning</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在被拦截方法执行完毕调用</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@AfterThrowing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在被拦截方法抛出异常后调用</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Around</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">包裹被拦截方法的执行</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Before</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在被拦截方法执行之前执行</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>上个示例代码中所有通知注解中的pointcut表达式都是一样的，为了减少重复，可以在@Aspect注解的切面中使用 <code>@Pointcut</code> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">...
+
+@Aspect
+public class Audience {
+
+  @Pointcut("execution(** springfast.Performance.perform(..))")
+  public void performance() {}                                       <i class="conum" data-value="1"></i><b>(1)</b>
+
+  @Before("performance()")
+  public void silenceCellPhones() {
+    System.out.println("Silencing cell phones");
+  }
+
+  @Before("performance()")
+  public void takeSeats() {
+    System.out.println("Taking seats");
+  }
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@Pointcut</code> 注解的方法只是作为标记来引用，不需要定义任何操作</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>仅使用上面的注解并不能让切面生效，若使用JavaConfig，需要在配置类上添加 <code>@EnableAspectJAutoProxy</code>
+注解开启 <em>自动代理（auto-proxying）</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableAspectJAutoProxy                                              <i class="conum" data-value="1"></i><b>(1)</b>
+@ComponentScan
+public class ConcertConfig {
+
+  @Bean
+  public Audience audience() {
+    return new Audience();                                           <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>启用自动代理功能</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>将该切面声明为Bean</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在XML配置环境中，等效的配置项为 <code>&lt;aop:aspectj-autoproxy&gt;</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"              <i class="conum" data-value="1"></i><b>(1)</b>
+  xsi:schemaLocation="http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd         <i class="conum" data-value="1"></i><b>(1)</b>
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"&gt;
+
+  &lt;context:component-scan base-package="org.calvin.springfast" /&gt;
+
+  &lt;aop:aspectj-autoproxy /&gt;
+
+  &lt;bean class="org.calvin.springfast.Audience" /&gt;
+
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>注意添加Spring的aop命名空间</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>自动代理机制会根据 <code>@Aspect</code> 注解的Bean中的通知方法，为其pointcut表达式匹配到的Bean创建代理。</p>
+</div>
+<div class="paragraph">
+<p>Around通知是最强的通知类型，类似于before和after通知的结合：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Aspect
+public class Audience {
+
+  @Pointcut("execution(** springfast.Performance.perform(..))")
+  public void performance() {}
+
+  @Around("performance()")
+  public void watchPerformance(ProceedingJoinPoint jp) {
+    try {
+      System.out.println("Silencing cell phones");
+      System.out.println("Taking seats");
+      jp.proceed();                                                  <i class="conum" data-value="1"></i><b>(1)</b>
+      System.out.println("CLAP CLAP CLAP!!!");
+    } catch (Throwable e) {
+      System.out.println("Demanding a refund");
+    }
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>注意参数ProceedingJoinPoint，<code>ProceedingJoinPoint.proceed()</code> 将调用被通知的方法。
+如果没有调用，相当于忽略掉被通知的方法。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如果要在通知方法中获取被通知方法的参数，需要在pointcut表达式中配合使用 <code>args</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Aspect
+public class TrackCounter {
+
+  @Pointcut(
+    "execution(* soundsystem.CompactDisc.playTrack(int)) " +
+    "&amp;&amp; args(trackNumber)")                                          <i class="conum" data-value="1"></i><b>(1)</b>
+  public void trackPlayed(int trackNumber) {}
+
+  @Before("trackPlayed(trackNumber)")
+  public void countTrack(int trackNumber) {
+    int currentCount = getPlayCount(trackNumber);
+    trackCounts.put(trackNumber, currentCount + 1);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>args 的参数跟pointcut标记方法的参数一致，表示任何传给被通知方法playTrack的int参数也同样传给通知方法countTrack。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>AOP中的 <em>引入（introduction）</em> 能给已有的Bean添加新方法。切面是实现了与所包装Bean相同接口的代理，
+引入就是除了实现这些接口，还发布了新的接口，当新接口的方法被调用时，代理将调用委托给实现该接口的其他对象，
+有点像一个Bean的实现被拆分到多个类中一样，例如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface Encoreable {
+  void performEncore();
+}
+
+// 该切面将Encoreable引入到所有Performance接口的实现中
+@Aspect
+public class EncoreableIntroducer {
+
+  @DeclareParents(value="springfast.Performance+",                   <i class="conum" data-value="1"></i><b>(1)</b>
+                  defaultImpl=DefaultEncoreable.class)               <i class="conum" data-value="2"></i><b>(2)</b>
+  public static Encoreable encoreable;                               <i class="conum" data-value="3"></i><b>(3)</b>
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@DeclareParents</code> 注解的 <strong>value</strong> 属性使用pointcut表达式指定将被引入新接口的beans</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><strong>defaultImpl</strong> 指定所引入的新接口的实现类</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>添加了 <code>@DeclareParents</code> 注解的静态变量指明了将被引入的新接口 <code>Encoreable</code></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_在xml中创建切面"><a class="anchor" href="#_在xml中创建切面"></a>2.3.4. 在XML中创建切面</h4>
+<div class="paragraph">
+<p>在XML中创建切面的方式可以避免对类的修改（不用添加注解）。
+Spring 的 <em>aop</em> 命名空间中提供了许多配置元素：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 35%;">
+<col style="width: 65%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">AOP配置元素</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:advisor&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义AOP通知器</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:after&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义后置通知</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:after-returning&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义返回通知</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:after-throwing&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义异常通知</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:around&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义环绕通知</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:before&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义前置通知</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:aspect&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义切面</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:aspectj-autoproxy&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启用@AspectJ注解驱动的切面</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:config&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">顶层的配置元素，大多的&lt;aop:*&gt;元素必须包含在该元素内</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:declare-parents&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">为被通知对象提供额外接口和实现</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">&lt;aop:pointcut&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义切点</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>与之前注解方式配置的切面等效的XML配置如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;aop:config&gt;
+
+  &lt;!-- 1.带各种通知的切面 --&gt;
+  &lt;aop:aspect ref="audience"&gt;                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;aop:pointcut
+      id="performance"
+      expression="execution(** springfast.Performance.perform(..))" /&gt;
+
+    &lt;aop:before pointcut-ref="performance" method="silenceCellPhones"/&gt;
+    &lt;aop:before pointcut-ref="performance" method="takeSeats"/&gt;
+    &lt;aop:after-returning  pointcut-ref="performance" method="applause"/&gt;
+    &lt;aop:after-throwing
+       pointcut="execution(** springfast.Performance.perform(..))"
+       method="demandRefund"/&gt;
+
+    &lt;aop:around
+       pointcut-ref="performance"
+       method="watchPerformance"/&gt;                                              <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;/aop:aspect&gt;
+
+  &lt;!-- 2. 往通知方法中传入参数 --&gt;
+  &lt;aop:aspect ref="trackCounter"&gt;                                               <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;aop:pointcut id="trackPlayed"
+      expression= "execution(* soundsystem.CompactDisc.playTrack(int))
+      and args(trackNumber)" /&gt;                                                 <i class="conum" data-value="4"></i><b>(4)</b>
+
+    &lt;aop:before pointcut-ref="trackPlayed" method="countTrack"/&gt;
+  &lt;/aop:aspect&gt;
+
+  &lt;!-- 3. 使用切面引入新接口（或功能） --&gt;
+  &lt;aop:aspect&gt;
+    &lt;aop:declare-parents
+      types-matching="springfast.Performance+"
+      implement-interface="springfast.Encoreable"
+      default-impl="springfast.DefaultEncoreable"                               <i class="conum" data-value="5"></i><b>(5)</b>
+      /&gt;
+  &lt;/aop:aspect&gt;
+&lt;/aop:config&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>audience为前例中去掉所有注解的纯POJO类的bean，并去掉了 <em>@Pointcut</em> 注解的标记方法</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>watchPerformance的实现跟之前一样，参数为 <em>ProceedingJoinPoint</em>，
+并调用 <code>ProceedingJoinPoint.proceed()</code>，只不过去掉了 <em>@Around</em> 注解</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>trackCounter为前例中去掉所有注解的纯POJO类的bean，并去掉了 <em>@Pointcut</em> 注解的标记方法</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>在XML中需要使用 <em>and</em> 代替 <em>&amp;&amp;</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>如果需要委托的接口实现类是Bean的话可以使用 <code>delegate-ref="encoreableDelegate"</code> 代替 <strong>default-impl</strong> 属性</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_使用aspectj"><a class="anchor" href="#_使用aspectj"></a>2.3.5. 使用AspectJ</h4>
+<div class="paragraph">
+<p>AspectJ提供了Spring AOP所不支持的许多类型的切点。AspectJ切面与Spring 相互独立，
+但如果AspectJ切面在执行通知时依赖于其他的类，虽然可以在切面内部实例化这些类，
+但最好的方式还是使用Spring将依赖注入。</p>
+</div>
+<div class="paragraph">
+<p>比如存在以下切面：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public aspect CriticAspect {
+  public CriticAspect() {}
+
+  pointcut performance() : execution(* perform(..));
+
+  afterReturning() : performance() {
+    System.out.println(criticismEngine.getCriticism());                         <i class="conum" data-value="1"></i><b>(1)</b>
+  }
+
+  private CriticismEngine criticismEngine;
+  public void setCriticismEngine(CriticismEngine criticismEngine) {             <i class="conum" data-value="2"></i><b>(2)</b>
+    this.criticismEngine = criticismEngine;
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>切面在执行时依赖于criticismEngine的实现</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>通过Spring将依赖的CriticismEngine实现注入</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>因为需要使用Spring的依赖注入，需要在配置文件中将切面声明为Bean：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean class="com.springinaction.springidol.CriticAspect"
+    factory-method="aspectOf"&gt;                                                  <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;property name="criticismEngine" ref="criticismEngine" /&gt;
+&lt;/bean&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>CriticAspect切面的实例是由AspectJ创建而不是Spring，为了能将依赖注入到该切面实例中，
+需要使用AspectJ的静态方法aspectOf（单例方法）来获取该切面的一个引用。</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_web"><a class="anchor" href="#_spring_web"></a>3. Spring Web</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_创建spring_web应用"><a class="anchor" href="#_创建spring_web应用"></a>3.1. 创建Spring Web应用</h3>
+<div class="sect3">
+<h4 id="_spring_mvc_起步"><a class="anchor" href="#_spring_mvc_起步"></a>3.1.1. Spring MVC 起步</h4>
+<div class="paragraph">
+<p>一个请求在Spring MVC中首先会到达 <strong><em>DispatcherServlet</em></strong> , DispatcherServlet 是 Spring MVC
+的 <em>前端控制器（front controller，常见的web应用模式）</em> ，这个单例的servlet负责将请求委托给应用的其他组件来执行实际的处理。</p>
+</div>
+<div class="paragraph">
+<p>请求在Spring MVC中的处理流程如下：</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="/media/img/RequestLifecycle2.png" alt="Request-Life-cycle" width="1196" height="555">
+</div>
+<div class="title">Figure 3. Spring MVC中请求的处理流程</div>
+</div>
+<div class="paragraph">
+<p>以前Servlet一般都是在web.xml中配置的（当然现在也可以），但根据Servlet 3规范以及从Spring 3.1开始，
+我们还可以在Java中配置DispatcherServlet：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package org.calvin.springfast.config;
+import org.springframework.web.servlet.support.
+    AbstractAnnotationConfigDispatcherServletInitializer;
+
+public class SpittrWebAppInitializer
+    extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+  @Override
+  protected String[] getServletMappings() {
+    return new String[] { "/" };                                     <i class="conum" data-value="1"></i><b>(1)</b>
+  }
+
+  @Override
+  protected Class&lt;?&gt;[] getRootConfigClasses() {
+    return new Class&lt;?&gt;[] { RootConfig.class };                      <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+
+  @Override
+  protected Class&lt;?&gt;[] getServletConfigClasses() {
+    return new Class&lt;?&gt;[] { WebConfig.class };                       <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>将DispatcherServlet映射到路径 “/”，可以指定多个路径</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>指定配置类</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>所有继承 <code>AbstractAnnotationConfigDispatcherServletInitializer</code> 的类将被自动识别并用于
+配置 <code>DispatcherServlet</code> 以及在servlet上下文（context）中设置Spring 应用上下文（application context）。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">解读AbstractAnnotationConfigDispatcherServletInitializer</div>
+<div class="paragraph">
+<p>在 Servlet 3.0 环境中，容器会查找classpath下所有实现了 <em>javax.servlet.ServletContainerInitializer</em> 接口的类，
+并使用这些类来配置Servlet 容器。</p>
+</div>
+<div class="paragraph">
+<p>Spring 中提供了一个实现该接口的类 <em>SpringServletContainerInitializer</em> ，这个类添加了 <code>@HandlesTypes(WebApplicationInitializer.class)</code>
+这样的注解，因此Servlet 3.0+的容器将会根据 <em>@HandlesTypes</em> 注解的参数扫描所有 <em>WebApplicationInitializer</em> 接口的实现类，
+<em>SpringServletContainerInitializer</em> 再将后续的配置委托给这些类，Spring 3.2提供了一个方便的类实现了 <em>WebApplicationInitializer</em> 接口，
+即 <em>AbstractAnnotationConfigDispatcherServletInitializer</em> 。</p>
+</div>
+<div class="paragraph">
+<p>因此任何继承该类的子类在Servlet 3.0 环境中将被容器自动发现并用于配置servlet上下文。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>注意上面代码中的两个配置类。Spring Web应用中通常会有两个Spring上下文，一个是由DispatcherServlet创建的子上下文，
+主要用于创建和加载一些Web组件如控制器（controller）、视图解析器（view resolver）以及处理器映射（handler mapping）；
+另外一个是由ContextLoaderListener创建的根上下文，主要用于创建和加载一些中间层和数据层的Bean。</p>
+</div>
+<div class="paragraph">
+<p>因为 AbstractAnnotationConfigDispatcherServletInitializer 已经在底层创建了 DispatcherServlet 和 ContextLoaderListener ，
+ <code>getServletConfigClasses()</code> 和 <code>getRootConfigClasses()</code>  则分别对应用于配置其中的子上下文和根上下文的配置类。</p>
+</div>
+<div class="paragraph">
+<p>在Java中配置的方式只适用于支持Servlet 3.0以上的环境，否则还是得在web.xml中配置DispatcherServlet。</p>
+</div>
+<div class="paragraph">
+<p>在配置类中添加 <code>@EnableWebMvc</code> 注解就可以启用Spring MVC，不过仅使用这个注解只会用到 <code>WebMvcConfigurationSupport</code> 中的默认设置，
+通常应该实现 <code>WebMvcConfigurer</code> 接口或直接继承 <code>WebMvcConfigurerAdapter</code> 类并重写相关方法来定制配置项：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebMvc                                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+@ComponentScan("org.calvin.springfast.web")                                     <i class="conum" data-value="2"></i><b>(2)</b>
+public class WebConfig extends WebMvcConfigurerAdapter {
+
+  @Bean
+  public ViewResolver viewResolver() {
+    InternalResourceViewResolver resolver = new InternalResourceViewResolver(); <i class="conum" data-value="3"></i><b>(3)</b>
+    resolver.setPrefix("/WEB-INF/views/");
+    resolver.setSuffix(".jsp");
+    resolver.setExposeContextBeansAsAttributes(true);
+    return resolver;
+  }
+
+  @Override
+  public void configureDefaultServletHandling(
+      DefaultServletHandlerConfigurer configurer) {
+    configurer.enable();                                                        <i class="conum" data-value="4"></i><b>(4)</b>
+  }
+
+}
+
+// 另外 RootConfig 的代码如下，仅作参考
+@Configuration
+@ComponentScan(basePackages={"org.calvin.springfast"},
+    excludeFilters={
+      @Filter(type=FilterType.ANNOTATION, value=EnableWebMvc.class)
+    })
+public class RootConfig {
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>启用Spring MVC</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>启用组件扫描</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>配置JSP视图解析器</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>配置对静态资源（如图片、css文件）的处理，将对这些资源的请求转接给容器的servlet</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如果WebMvcConfigurer接口提供的配置项不能满足特殊的定制需求，可以考虑去掉配置类的注解 <code>@EnableWebMvc</code> ，而直接继承
+<code>WebMvcConfigurationSupport</code> 或 <code>DelegatingWebMvcConfiguration</code> 。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_编写简单的控制器_controller"><a class="anchor" href="#_编写简单的控制器_controller"></a>3.1.2. 编写简单的控制器（Controller）</h4>
+<div class="paragraph">
+<p>在Spring MVC中，控制器其实就是一些类，这些类的方法添加了 <code>@RequestMapping</code> 注解以声明方法要处理的请求。</p>
+</div>
+<div class="paragraph">
+<p>举几个简单的例子：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 最简单的控制器，映射到路径 “/”
+@Controller
+public class HomeController {
+  @RequestMapping(value="/", method=GET)
+  public String home() {
+    return "home";
+  }
+}
+
+// 将RequestMapping添加到类上，类的所有方法的映射路径将继承此路径
+@Controller
+@RequestMapping("/")
+public class HomeController {
+  @RequestMapping(method=GET)
+  public String home() {
+    return "home";
+  }
+}
+
+// 也可以在RequestMapping中映射多个路径
+@Controller
+@RequestMapping({"/", "/homepage"})
+public class HomeController {
+...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_处理请求参数"><a class="anchor" href="#_处理请求参数"></a>3.1.3. 处理请求参数</h4>
+<div class="paragraph">
+<p>有三种方法可以向控制器的处理方法传入参数：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>查询（query）参数</p>
+</li>
+<li>
+<p>表单（form）参数</p>
+</li>
+<li>
+<p>路径（path）变量</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_使用查询参数"><a class="anchor" href="#_使用查询参数"></a>使用查询参数</h5>
+<div class="paragraph">
+<p>如果要处理请求中的查询参数，如 <code>/spittles?max=238900&amp;count=50</code> 中的 <em>max</em> 和 <em>count</em> ，
+需要使用 <code>@RequestParam</code> 注解：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 类级的RequestMapping为 /spittles
+private static final String MAX_LONG_AS_STRING =
+        Long.toString(Long.MAX_VALUE);
+
+@RequestMapping(method=RequestMethod.GET)
+public List&lt;Spittle&gt; spittles(
+    @RequestParam(value="max",
+                  defaultValue=MAX_LONG_AS_STRING) long max,                    <i class="conum" data-value="1"></i><b>(1)</b>
+    @RequestParam(value="count", defaultValue="20") int count) {
+  return spittleRepository.findSpittles(max, count);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><strong>defaultValue</strong> 表示max参数为空时的默认值，因为查询参数都是String，所以只接受String类型，
+这个不是必选项</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_使用路径变量"><a class="anchor" href="#_使用路径变量"></a>使用路径变量</h6>
+<div class="paragraph">
+<p>如果要处理请求路径中的一部分，如 <code>/spittles/12345</code> 中的 12345传给后台，需要使用 <code>@PathVariable</code> 注解：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 类级的RequestMapping为 /spittles
+@RequestMapping(value="/{spittleId}", method=RequestMethod.GET)
+  public String spittle(
+    @PathVariable("spittleId") long spittleId, Model model) {                   <i class="conum" data-value="1"></i><b>(1)</b>
+  model.addAttribute(spittleRepository.findOne(spittleId));
+  return "spittle";
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>如果参数的名字和占位符的相同可以省略PathVariable的value值</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_处理表单"><a class="anchor" href="#_处理表单"></a>3.1.4. 处理表单</h4>
+<div class="paragraph">
+<p>处理表单提交的一个示例如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Controller
+@RequestMapping("/spitter")
+public class SpitterController {
+
+  @RequestMapping(value="/register", method=POST)
+  public String processRegistration(Spitter spitter) {               <i class="conum" data-value="1"></i><b>(1)</b>
+    spitterRepository.save(spitter);
+    return "redirect:/spitter/" + spitter.getUsername();             <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Spitter 的属性值会自动匹配到同名的请求参数</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>InternalResourceViewResolver</code> 对带有 <code>redirect:</code> 前缀的视图名会自动解析为重定向请求，
+类似的还有 <code>forward:</code> 前缀会被解析为服务端转发。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring提供了对 <strong>Java Validation API（JSR-303）</strong> 的支持，在Spring MVC中不需要做额外的配置，
+只要在项目的classpath下存在该API的实现如Hibernate Validator就可以使用。</p>
+</div>
+<div class="paragraph">
+<p>Java Validation API中有许多用于约束属性值的注解：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">注解</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@AssertFalse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为 <em>Boolean</em> 类型值为 <em>false</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@AssertTrue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为 <em>Boolean</em> 类型值为 <em>true</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@DecimalMax</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为数值类型且值小于等于给定的BigDecimal字符串</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@DecimalMin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为数值类型且值大于等于给定的BigDecimal字符串</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Digits</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为数值类型且值为指定的数</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Future</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为将来的某一个时间（date）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Past</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为过去的某一个时间（date）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为数值类型且值小于等于给定的值</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Min</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素必须为数值类型且值大于等于给定的值</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@NotNull</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素的值必须必须不能为null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素的值必须必须为null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素的值必须匹配给定的正则表达式</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">@Size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被注解元素的值必须为String，集合（collection）或数组，其大小在指定的范围内</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>以上只是部分约束注解，一个示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public class Spitter {
+  private Long id;
+
+  @NotNull
+  @Size(min=5, max=16)
+  private String username;
+
+  @NotNull
+  @Size(min=5, max=25)
+  private String password;
+
+  @NotNull
+  @Size(min=2, max=30)
+  private String firstName;
+
+  @NotNull
+  @Size(min=2, max=30)
+  private String lastName;                                           <i class="conum" data-value="1"></i><b>(1)</b>
+  ...
+}
+// ...
+@RequestMapping(value="/register", method=POST)
+public String processRegistration(
+  @Valid Spitter spitter,                                            <i class="conum" data-value="2"></i><b>(2)</b>
+  Errors errors) {                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+  if (errors.hasErrors()) {
+    return "registerForm";
+  }
+  spitterRepository.save(spitter);
+  return "redirect:/spitter/" + spitter.getUsername();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><em>lastName</em> 不能为null，字符长度在2~30之间</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>@Valid</code> 指示Spring对注解的参数验证是否满足约束</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>如果某个约束验证失败可以从 <em>Errors</em> 中查到， <em>Errors</em> 必须紧跟在添加了 <code>@Valid</code> 注解的参数后面</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_展示web视图"><a class="anchor" href="#_展示web视图"></a>3.2. 展示Web视图</h3>
+<div class="sect3">
+<h4 id="_视图的解析"><a class="anchor" href="#_视图的解析"></a>3.2.1. 视图的解析</h4>
+<div class="paragraph">
+<p>Spring MVC中的视图解析器是为了将处理请求的逻辑与视图的展现解耦。
+Spring MVC定义了 <code>ViewResolver</code> 和 <code>View</code> 接口：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface ViewResolver {
+  View resolveViewName(String viewName, Locale locale) throws Exception;
+}
+
+public interface View {
+  String getContentType();
+  void render(Map&lt;String, ?&gt; model,
+              HttpServletRequest request,
+              HttpServletResponse response) throws Exception;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这两个接口可用于实现自定义的视图解析过程。</p>
+</div>
+<div class="paragraph">
+<p>Spring已经提供许多开箱即用的视图解析器：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 70%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">视图解析器</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">BeanNameViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在Spring上下文中查找bean id与逻辑视图名匹配的View的实现</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">ContentNegotiatingViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">根据客户端的请求内容类型将视图的请求委托给能产生该类型内容的视图解析器</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">FreeMarkerViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查找FreeMarker模版</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">InternalResourceViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查找应用内的资源（通常是JSP）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">JasperReportsViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查找JasperReports报表文件</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">ResourceBundleViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">根据属性文件（property file）查找视图View的实现</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">TilesViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">查找Tiles模板文件</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">UrlBasedViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">直接使用视图名查找物理位置所在的视图</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">VelocityLayoutViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">使用多个Velocity模板组合为页面</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">VelocityViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">解析为Velocity模板的视图</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">XmlViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">从XML文件中查找View的实现，类似于BeanNameViewResolver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">XsltViewResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">解析为XSLT的视图</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_创建jsp视图"><a class="anchor" href="#_创建jsp视图"></a>3.2.2. 创建JSP视图</h4>
+<div class="paragraph">
+<p><em>InternalResourceViewResolver</em> 使用 <em>前缀（prefix）</em> 和 <em>后缀（suffix）</em> 并组合上逻辑视图名来
+定位物理位置上的视图资源。</p>
+</div>
+<div class="paragraph">
+<p>比如要匹配到 <code>/WEB-INF/views/</code> 路径下的JSP文件，在Java中可以这么配置：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public ViewResolver viewResolver() {
+  InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+  resolver.setPrefix("/WEB-INF/views/");
+  resolver.setSuffix(".jsp");
+  return resolver;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>XML中等效的配置为：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="viewResolver"
+      class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+      p:prefix="/WEB-INF/views/"
+      p:suffix=".jsp" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这样当使用视图名比如 <em>home</em> 时，实际返回的会是 <code>/WEB-INF/views/home.jsp</code> 。</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_mvc的高级用法"><a class="anchor" href="#_spring_mvc的高级用法"></a>3.3. Spring MVC的高级用法</h3>
+<div class="sect3">
+<h4 id="_备选的spring_mvc配置方式"><a class="anchor" href="#_备选的spring_mvc配置方式"></a>3.3.1. 备选的Spring MVC配置方式</h4>
+<div class="paragraph">
+<p>在之前使用 <em>AbstractAnnotationConfigDispatcherServletInitializer</em> 配置时只重载了3个必要的方法，
+还可以重载其他方法以提供更多配置项。比如 <code>customizeRegistration()</code> ，这个方法是在 <em>DispatcherServlet</em>
+被注册到servlet容器后调用，参数为 <code>ServletRegistration.Dynamic</code> ，比如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Override
+protected void customizeRegistration(Dynamic registration) {
+  registration.setMultipartConfig(
+    new MultipartConfigElement("/tmp/spittr/uploads"));
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>ServletRegistration.Dynamic</em> 中可配置的项包括 <code>setLoadOnStartup</code> 设置加载优先级，
+<code>setInitParameter</code> 设置初始化参数， <code>setMultipartConfig</code> 配置对Servlet 3.0 mutipart的支持。</p>
+</div>
+<div class="paragraph">
+<p><em>AbstractAnnotationConfigDispatcherServletInitializer</em> 只创建了 <em>DispatcherServlet</em> 和
+<em>ContextLoaderListener</em> ，如果要添加其他的servlet、filter和listener就得定义自己的
+初始化器类（initializer），最简单的方式就是实现 <em>WebApplicationInitializer</em> 接口 ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package com.myapp.config;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration.Dynamic;
+import org.springframework.web.WebApplicationInitializer;
+import com.myapp.MyServlet;
+import com.myapp.MyFilter;
+
+public class MyServletInitializer implements WebApplicationInitializer {
+  @Override
+  public void onStartup(ServletContext servletContext) throws ServletException {
+    Dynamic myServlet =
+              servletContext.addServlet("myServlet", MyServlet.class);          <i class="conum" data-value="1"></i><b>(1)</b>
+    myServlet.addMapping("/custom/**");
+
+    javax.servlet.FilterRegistration.Dynamic filter =
+              servletContext.addFilter("myFilter", MyFilter.class);             <i class="conum" data-value="1"></i><b>(1)</b>
+    filter.addMappingForUrlPatterns(null, false, "/custom/*");
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>注册servle和filter</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>这种方式适合自定义servlet和filter的映射和配置，如果是直接将filter映射到 <em>DispatcherServlet</em> ，
+还有种可选的方式是重写 <em>AbstractAnnotationConfigDispatcherServletInitializer</em> 中的 <code>getServletFilters</code> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Override
+protected Filter[] getServletFilters() {
+  return new Filter[] { new MyFilter() };                            <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>该方法返回的所有filter都将自动映射到 <em>DispatcherServlet</em></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>以上的所有在java中配置servlet、filter和listener的方式只适用于部署到servlet 3.0环境的应用，
+如果不喜欢这种配置方式或是不得不在servlet低于3.0的环境下部署应用，可以使用传统的 <code>web.xml</code> 配置方式：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.5"
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"&gt;
+
+  &lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;/WEB-INF/spring/root-context.xml&lt;/param-value&gt;                 <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;/context-param&gt;
+
+  &lt;listener&gt;
+    &lt;listener-class&gt;
+      org.springframework.web.context.ContextLoaderListener                     <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;/listener-class&gt;
+  &lt;/listener&gt;
+
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;
+      org.springframework.web.servlet.DispatcherServlet
+    &lt;/servlet-class&gt;
+    &lt;init-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;
+      /WEB-INF/spring/appServlet/servlet-context.xml                            <i class="conum" data-value="3"></i><b>(3)</b>
+    &lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;                                     <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>配置Spring根上下文的路径，多个xml文件可以使用 <code>,</code> 分隔</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>注册ContextLoaderListener</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>配置DispatcherServlet中的Spring子上下文的路径</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>将DispatcherServlet映射到路径 “/”</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>这个web.xml加载Spring的配置文件也是XML，对于使用JavaConfig配置Spirng的方式，
+需要修改 <em>DispatcherServlet</em> 和 <em>ContextLoaderListener</em> 的 <code>contextClass</code> 参数：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.5"
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"&gt;
+
+  &lt;context-param&gt;
+    &lt;param-name&gt;contextClass&lt;/param-name&gt;
+    &lt;param-value&gt;
+      org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+    &lt;/param-value&gt;
+  &lt;/context-param&gt;
+
+  &lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;com.habuma.spitter.config.RootConfig&lt;/param-value&gt;             <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;/context-param&gt;
+
+  &lt;listener&gt;
+    &lt;listener-class&gt;
+      org.springframework.web.context.ContextLoaderListener
+    &lt;/listener-class&gt;
+  &lt;/listener&gt;
+
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;
+      org.springframework.web.servlet.DispatcherServlet
+    &lt;/servlet-class&gt;
+    &lt;init-param&gt;
+      &lt;param-name&gt;contextClass&lt;/param-name&gt;
+      &lt;param-value&gt;
+        org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+      &lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+      &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+      &lt;param-value&gt;
+        com.habuma.spitter.config.WebConfigConfig                               <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Spring根上下文配置类</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>DispatcherServlet的Spring上下文配置类</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_处理multipart表单数据"><a class="anchor" href="#_处理multipart表单数据"></a>3.3.2. 处理multipart表单数据</h4>
+<div class="sect4">
+<h5 id="_配置对mutipart的支持"><a class="anchor" href="#_配置对mutipart的支持"></a>配置对mutipart的支持</h5>
+<div class="paragraph">
+<p>multipart表单将表单数据拆分成多个独立的部分，每个部分对应一个表单域（field）而且可以有自己的类型，比如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http" data-lang="http">------WebKitFormBoundaryqgkaBn8IHJCuNmiW
+Content-Disposition: form-data; name="firstName"
+
+Charles
+------WebKitFormBoundaryqgkaBn8IHJCuNmiW
+Content-Disposition: form-data; name="lastName"
+
+Xavier
+------WebKitFormBoundaryqgkaBn8IHJCuNmiW
+Content-Disposition: form-data; name="email"
+
+charles@xmen.com
+------WebKitFormBoundaryqgkaBn8IHJCuNmiW
+Content-Disposition: form-data; name="username"
+
+professorx
+------WebKitFormBoundaryqgkaBn8IHJCuNmiW
+Content-Disposition: form-data; name="password"
+
+letmein01
+------WebKitFormBoundaryqgkaBn8IHJCuNmiW
+Content-Disposition: form-data; name="profilePicture"; filename="me.jpg"
+Content-Type: image/jpeg
+
+[[ Binary image data goes here ]]
+------WebKitFormBoundaryqgkaBn8IHJCuNmiW--</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>DispatcherServlet</em> 不会解析multipart请求中的数据，而是委托给 <em>MultipartResolver</em> 接口解析其中的内容。
+从Spring 3.1起，该接口就有两个开箱即用的实现可供选择：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>CommonsMultipartResolver</em></strong> ，使用 Jakarta Commons FileUpload 解析mutipart请求</p>
+</li>
+<li>
+<p><strong><em>StandardServletMultipartResolver</em></strong> ，依靠 Servlet 3.0 对mutipart请求的支持。
+这个应该首选，利用底层容器的支持而不需要添加其他依赖项。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>StandardServletMultipartResolver</em> 的使用非常简单，只需要将其声明为Bean即可：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public MultipartResolver multipartResolver() throws IOException {
+  return new StandardServletMultipartResolver();                     <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>这里不能配置文件上传路径、文件大小限制等参数</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>但只是这样不会使其生效，必须在配置 <em>DispatcherServlet</em> 的时候同时配置mutipart的细节如上传文件的路径（路径是必须的）才可以使用。</p>
+</div>
+<div class="paragraph">
+<p>如果使用 <em>AbstractAnnotationConfigDispatcherServletInitializer</em> 就重写方法 <code>customizeRegistration</code> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Override
+protected void customizeRegistration(Dynamic registration) {
+  registration.setMultipartConfig(
+      new MultipartConfigElement("/tmp/spittr/uploads"));
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>MultipartConfigElement</em> 的构造函数还可以接受其他参数配置对文件或请求的限制：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>每个上传文件的最大值（字节），默认没有限制</p>
+</li>
+<li>
+<p>整个mutipart请求的最大值（字节），因为可以上传多个文件，这个限制很有意义，默认没有限制</p>
+</li>
+<li>
+<p>上传文件的最大缓冲值，超过该值后将被写入磁盘，默认没有限制，也就是直接写入磁盘。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>如果在 web.xml 中配置 <em>DispatcherServlet</em> 的方式需要使用 <code>&lt;multipart-config&gt;</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;servlet&gt;
+  &lt;servlet-name&gt;appServlet&lt;/servlet-name&gt;
+  &lt;servlet-class&gt;
+    org.springframework.web.servlet.DispatcherServlet
+  &lt;/servlet-class&gt;
+  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;multipart-config&gt;
+    &lt;location&gt;/tmp/spittr/uploads&lt;/location&gt;
+    &lt;max-file-size&gt;2097152&lt;/max-file-size&gt;
+    &lt;max-request-size&gt;4194304&lt;/max-request-size&gt;
+  &lt;/multipart-config&gt;
+&lt;/servlet&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>非Servlet 3.0 环境可以使用 <em>CommonsMultipartResolver</em> ，不同的是，上传路径不是必须配置项，
+默认的上传路径为容器的临时文件夹，而且可以直接在声明Bean的时候把各种参数配置好：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public MultipartResolver multipartResolver() throws IOException {
+  CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+  multipartResolver.setUploadTempDir(
+      new FileSystemResource("/tmp/spittr/uploads"));
+  multipartResolver.setMaxUploadSize(2097152);
+  multipartResolver.setMaxInMemorySize(0);
+  return multipartResolver;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_处理mutipart请求"><a class="anchor" href="#_处理mutipart请求"></a>处理mutipart请求</h5>
+<div class="paragraph">
+<p>在Controller方法中处理mutipart请求上传的文件最常用的是在参数上添加 <code>@RequestPart</code> 注解，
+参数的一种方式是使用 <em>byte</em> 数组：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(value="/register", method=POST)
+public String processRegistration(
+    @RequestPart("profilePicture") byte[] profilePicture,
+    @Valid Spitter spitter,
+    Errors errors) {
+      ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这种方式的缺点是无法得知上传文件的类型、文件名等信息。另一种方式是使用 <em>MultipartFile</em> ，
+可以参考下该接口的代码：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public interface MultipartFile {
+  String getName();
+  String getOriginalFilename();
+  String getContentType();
+  boolean isEmpty();
+  long getSize();
+  byte[] getBytes() throws IOException;
+  InputStream getInputStream() throws IOException;
+  void transferTo(File dest) throws IOException;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果是在Servlet 3.0 环境下，还有一个备选就是 <em>javax.servlet.http.Part</em> ， <em>Part</em> 跟
+<em>MultipartFile</em> 许多地方都是一样的：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// Part 的接口
+public interface Part {
+  public InputStream getInputStream() throws IOException;
+  public String getContentType();
+  public String getName();
+  public String getSubmittedFileName();
+  public long getSize();
+  public void write(String fileName) throws IOException;
+  public void delete() throws IOException;
+  public String getHeader(String name);
+  public Collection&lt;String&gt; getHeaders(String name);
+  public Collection&lt;String&gt; getHeaderNames();
+}
+
+// 使用 Part
+@RequestMapping(value="/register", method=POST)
+public String processRegistration(
+    @RequestPart("profilePicture") Part profilePicture,
+    @Valid Spitter spitter,
+    Errors errors) {
+      profilePicture.write("/data/spittr/" +
+        profilePicture.getOriginalFilename());
+      ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_处理异常"><a class="anchor" href="#_处理异常"></a>3.3.3. 处理异常</h4>
+<div class="paragraph">
+<p>Spring提供了一些能将异常转为响应（responses）的方式：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>特定的Spring异常会被自动转为HTTP状态码</p>
+</li>
+<li>
+<p>给异常添加 <code>@ResponseStatus</code> 注解可以将其映射到某个HTTP状态码</p>
+</li>
+<li>
+<p>在方式添加 <code>@ExceptionHandler</code> 注解处理异常</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Spring自带的异常与HTTP状态码的映射为：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">Spring异常</th>
+<th class="tableblock halign-left valign-top">HTTP状态码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">BindException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400 - Bad Request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">ConversionNotSupportedException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500 - Internal Server Error</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">HttpMediaTypeNotAcceptableException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">406 - Not Acceptable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">HttpMediaTypeNotSupportedException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">415 - Unsupported Media Type</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">HttpMessageNotReadableException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400 - Bad Request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">HttpMessageNotWritableException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500 - Internal Server Error</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">HttpRequestMethodNotSupportedException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">405 - Method Not Allowed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">MethodArgumentNotValidException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400 - Bad Request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">MissingServletRequestParameterException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400 - Bad Request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">MissingServletRequestPartException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400 - Bad Request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">NoSuchRequestHandlingMethodException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404 - Not Found</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">TypeMismatchException</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400 - Bad Request</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>以上是在 <em>DispatcherServlet</em> 或是执行验证时可能抛出的异常，而应用内的异常默认为 <em>500 - Internal Server Error</em> ，
+使用 <code>@ResponseStatus</code> 可以自定义应用异常的HTTP状态码：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 使用 @ResponseStatus自定义异常的映射
+package org.calvin.springfast.web;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+@ResponseStatus(value=HttpStatus.NOT_FOUND,
+                reason="Spittle Not Found")
+public class SpittleNotFoundException extends RuntimeException {
+}
+
+// ...SpittleNotFoundException被抛出时，返回 404 - Spittle Not Found
+@RequestMapping(value="/{spittleId}", method=RequestMethod.GET)
+public String spittle(
+    @PathVariable("spittleId") long spittleId,
+    Model model) {
+  Spittle spittle = spittleRepository.findOne(spittleId);
+  if (spittle == null) {
+    throw new SpittleNotFoundException();
+  }
+  model.addAttribute(spittle);
+  return "spittle";
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>相比异常出现时返回状态码，可能更希望像处理正常的请求那样返回一个错误页面的视图名，
+或是自定义的responsebody，虽然可以在处理请求的方法中直接捕获异常，然后再如此处理，
+但会使代码显得臃肿。</p>
+</div>
+<div class="paragraph">
+<p>可以在controller的异常处理方法上添加 <code>@ExceptionHandler</code> 注解来拦截指定异常：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@ExceptionHandler(DuplicateSpittleException.class)                   <i class="conum" data-value="1"></i><b>(1)</b>
+public String handleDuplicateSpittle() {
+  return "error/duplicate";                                          <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>指定该方法捕获的异常类型</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>返回逻辑视图名，跟正常的请求处理方法一样</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>该方法只会捕获当前controller中的 <em>任意</em> 请求处理方法抛出的 <em>DuplicateSpittleException</em> 。
+如果要捕获 <em>任意</em> controller中的 <em>任意</em> 请求处理方法抛出的异常，需要配合 <strong>通知型控制器</strong> 。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_通知型控制器_advising_controllers"><a class="anchor" href="#_通知型控制器_advising_controllers"></a>3.3.4. 通知型控制器（Advising controllers）</h4>
+<div class="paragraph">
+<p>Spring 3.2 新增了一种 <em>控制器通知</em> 用于拦截所有的控制器。一个通知型控制器就是添加了 <code>@ControllerAdvice</code>
+并包含至少以下一种类型方法的类：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@ExceptionHandler</code> 注解的方法</p>
+</li>
+<li>
+<p><code>@InitBinder</code> 注解的方法</p>
+</li>
+<li>
+<p><code>@ModelAttribute</code> 注解的方法</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>以上在通知型控制器的方法中将被用于应用所有的控制器中添加了 <code>@RequestMapping</code> 的方法。
+<code>@ControllerAdvice</code> 注解本身添加了 <code>@Component</code> 注解，因此添加该注解的类会被组件扫描发现。</p>
+</div>
+<div class="paragraph">
+<p>一个最实用的场景就是使用 <code>@ControllerAdvice</code> 和 <code>@ExceptionHandler</code> 在一个类中处理所有控制器可能抛出的异常：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@ControllerAdvice
+public class AppWideExceptionHandler {
+  @ExceptionHandler(DuplicateSpittleException.class)
+  public String duplicateSpittleHandler() {
+    return "error/duplicate";
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_在重定向请求中携带数据"><a class="anchor" href="#_在重定向请求中携带数据"></a>3.3.5. 在重定向请求中携带数据</h4>
+
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_backend"><a class="anchor" href="#_spring_backend"></a>4. Spring Backend</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_integration"><a class="anchor" href="#_spring_integration"></a>5. Spring Integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>&nbsp;[TBD]</p>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</body>
+</html>

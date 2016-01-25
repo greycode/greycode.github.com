@@ -26,6 +26,7 @@ Maven 是一个项目管理与构建（Build）工具，不过对于程序员来
 > 1. 自动化构建。Maven自定义了一套构建生命周期过程，从清理（clean）、编译（compile）、测试（test）与生成报告，到打包（package）和部署（deploy），只需执行相应命令（如 mvn compile）即可由maven帮我们完成相应的操作。
 2. 第三方依赖（jar包）管理。Maven在构建过程中会自动从配置的maven 库（默认为[Maven的中央库][1]）中下载该项目依赖的所有jar包到本地库中，并将其引入项目的编译路径中。
 
+<!--more-->
 ###安装Maven
 ####命令行
  1.确保已经安装过JDK，否则需要先到Oracle官网下载JDK安装。然后到https://maven.apache.org/download.cgi下载apache-maven-x.x.x-bin.zip后解压到安装目录（如D:\Program Files (x86)\apache-maven）。  

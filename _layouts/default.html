@@ -1,3 +1,6 @@
+{% if page.asciidoc  %}
+{% include asciidoc.html %}
+{% else %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
   <head>
@@ -26,9 +29,9 @@
 
     <!--script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script-->
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"></script>
-	
+
   </head>
-  <body style="background-color:#F9F9F5">
+  <body >
     <div id="container">
       <div id="main" role="main">
         <header>
@@ -36,7 +39,6 @@
           <a href="/" class="ss-icon" title="Go to homepage">home</a>
           <a href="/categories" class="ss-icon" title="Category" >list</a>
           <a href="/tags" class="ss-icon" title="Tag Cloud" >tags</a>
-          <a href="/guestbook" class="ss-icon" title="Guest Book" >talk</a>
           <a href="/about" class="ss-icon" title="About" >user</a>
           <a href="/feed" class="ss-icon" title="Subscribe by RSS" >rss</a>
         </div>
@@ -66,3 +68,4 @@
 </script>
   </body>
 </html>
+{% endif %}

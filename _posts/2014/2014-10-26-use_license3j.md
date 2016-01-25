@@ -19,6 +19,7 @@ $(document).ready(function() {
 在项目中可能会遇到要提供License的情况，虽然商业的解决方案有很多而且足够强大，但有时候我们认为不需要投入太多只是希望借License机制提供基本的限制或提醒功能，使用简单开源的方案就可以。
 
 License3j是一个免费开源可用于商业项目的License库，你可以借助它在项目中实现基本的License验证功能。
+<!--more-->
 我们可能会提供如下的License文件
 <pre><code class="text">
 user=greycode
@@ -140,7 +141,7 @@ Compression: Uncompressed, ZIP, ZLIB
 ...
 </code></pre>
 看到Home那里了吧，在上面的目录中找到`secring.gpg`与`pubring.gpg`文件。
-如果觉得上面的gpg命令行太麻烦，可以使用GUI的工具[Gpg4win]( http://www.gpg4win.org/download.html)（怎么一开始不说啊，害我跟到现在！！）。
+如果觉得上面的gpg命令行太麻烦，可以使用GUI的工具[Gpg4win]( http://www.gpg4win.org/download.html)。
 接下来使用`secring.gpg`进行加密。`pom.xml`中加入：
 <pre><code class="xml">
  &lt;dependency>

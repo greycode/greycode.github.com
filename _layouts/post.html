@@ -6,11 +6,15 @@ layout: default
 {{ content }}
 </section>
 <section class="meta">
+{% if page.asciidoc  %}
+{% else %}
 <hr/>
+{% endif %}
 <span class="author">
   <a href="http://greycode.github.io/">{{ site.author }}</a> - Yet another programmer :-)
 </span>
 <br />
+<div class="post-info">
 <span class="license">
   Published under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">(CC) BY-NC-SA</a>
 </span>
@@ -30,8 +34,8 @@ layout: default
   {% endfor %}
 </span>
 {% endif %}
+</div>
 <span class="time">
-  <br/>
   <time datetime="{{ page.date | date:"%Y-%m-%d" }}">{{ page.date | date:"%Y-%m-%d" }}</time>
 </span>
 </section>
@@ -117,6 +121,6 @@ $(window).load(function() {
         }
       }
     }
-  )(780, 780, 780, 780);
+  )(600, 600, 600, 600);
 });
 </script>

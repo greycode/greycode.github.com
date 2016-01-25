@@ -1,7 +1,10 @@
 markdown: rdiscount
 permalink: /:year/:month/:title/
-name: Grey`s Code
+name: Yet Another Programmer`s Blog
 url: http://greycode.github.io/
-author: Grey
-pygments: false
+author: "greycode"
+highlighter: false
 paginate: 24
+excerpt_separator: <!--more-->
+gems: 
+    - jekyll-paginate

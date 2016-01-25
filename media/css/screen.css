@@ -55,9 +55,9 @@ q:before, q:after {
 }
 ** JIM added below blockquote style*/
 .content blockquote {
-    border-left: 4px solid #DDDDDD;
+    border-left: 4px solid #6fb3e0;
     color: #777777;
-    padding: 0 15px;
+    padding: 0 25px;
 	margin: 15px 0;
 }
 
@@ -72,7 +72,6 @@ body{
     margin-right:auto;
     font-family:MuseoSans,Trebuchet,"Trebuchet MS",Tahoma,"Lucida Grande","Lucida Sans Unicode","Microsoft YaHei","Hiragino Sans GB","Hiragino Sans GB W3",Verdana,sans-serif;
     color:#000000;
-    background-color:#F9F9F5;
 }
 
 body>div {
@@ -143,16 +142,20 @@ pre {
     overflow: auto;
     font-family: consolas,monospace,"Microsoft YaHei";
     font-size: 14px;
-    padding: 12px;
+
     margin: 0 0 24px;
-	background-color: #f3f3f3;
+
 }
 p code {
-    font-family: consolas,monospace,"Microsoft YaHei";
+    font-family:'Inconsolata', 'Droid Sans Mono', 'DejaVu Sans Mono',
+     consolas,monospace,"Microsoft YaHei";
     font-size: 14px;
-    border: 1px solid #edebea;
-	padding: 1px 5px;
-	background-color: #EEE;
+	padding:.2em 1ex;
+	background-color: #f7f7f8;
+	margin: 0 2px;
+	word-spacing: -.15em;
+    line-height: 1.45;
+    text-rendering: optimizeSpeed;
 }
 hr {
     border: 0;
