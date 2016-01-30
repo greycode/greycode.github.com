@@ -39,7 +39,8 @@
 	}
 
 @media print {
-	.nav-bar {display: none;}
+	.nav-bar,#footer.asciidoc,#nav-menu-bottom,.c-menu,.c-mask { display: none; }
+	
 }
 </style>
 <!-- 浮动菜单 -->
@@ -59,7 +60,6 @@
 	<a href="/feed" class="nav-icon" title="Subscribe by RSS">
 		<i class="fa fa-rss"></i>
 	</a>
-	
 </div>
 <!-- 底部信息 -->
 <div id="footer" class="asciidoc">
@@ -143,3 +143,4 @@
   ga('send', 'pageview');
 
 </script>
+{% include asiidoc-foot.html %}
