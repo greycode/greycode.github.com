@@ -91,6 +91,9 @@ tags:
 		font-weight: 700;
 		font-size: 0.975em;
 	}
+	p.tableblock {
+		margin: 0;
+	}
 	@media print {
 		a[href^="http:"]:not(.bare):after, a[href^="https:"]:not(.bare):after {
 			content: "";
@@ -103,7 +106,7 @@ tags:
 <h1>Spring 快速上手</h1>
 <div class="details">
 <span id="author" class="author">Calvin Yu</span><br>
-<span id="revdate">since 2015-11-22 ，last-update 2015-12-14</span>
+<span id="revdate">since 2015-11-22 ，last-update 2016-01-31</span>
 </div>
 <div id="toc" class="toc">
 <div id="toctitle">目录</div>
@@ -167,7 +170,20 @@ tags:
 </li>
 </ul>
 </li>
-<li><a href="#_spring_backend">4. Spring Backend</a></li>
+<li><a href="#_spring_backend">4. Spring Backend</a>
+<ul class="sectlevel2">
+<li><a href="#_使用spring_jdbc玩转数据库">4.1. 使用Spring JDBC玩转数据库</a>
+<ul class="sectlevel3">
+<li><a href="#_spring的数据访问思想">4.1.1. Spring的数据访问思想</a></li>
+<li><a href="#_配置数据源">4.1.2. 配置数据源</a></li>
+<li><a href="#_使用_spring_jdbc">4.1.3. 使用 Spring JDBC</a></li>
+</ul>
+</li>
+<li><a href="#_使用orm框架">4.2. 使用ORM框架</a></li>
+<li><a href="#_对nosql的支持">4.3. 对NOSQL的支持</a></li>
+<li><a href="#_缓存数据">4.4. 缓存数据</a></li>
+</ul>
+</li>
 <li><a href="#_spring_integration">5. Spring Integration</a></li>
 </ul>
 </div>
@@ -176,7 +192,16 @@ tags:
 <div class="sect1">
 <h2 id="_前言"><a class="anchor" href="#_前言"></a>1. 前言</h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>本文是 Spring in Action, 4/e 的读书笔记，涵盖Spring 4.x新增的内容，并结合Spring的文档与源码做了一些注解。
+因为是篇实战性文章，将不对Spring中具体技术的实现/原理作太多描述。</p>
+</div>
+<div class="paragraph">
+<p>“ <em>快速上手</em> ”之意是适合有经验的Spring开发人员作快速参考之用。</p>
+</div>
+<div class="paragraph">
+<p>初学者不建议阅读。</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2960,7 +2985,110 @@ public class AppWideExceptionHandler {
 </div>
 <div class="sect3">
 <h4 id="_在重定向请求中携带数据"><a class="anchor" href="#_在重定向请求中携带数据"></a>3.3.5. 在重定向请求中携带数据</h4>
+<div class="paragraph">
+<p>在处理完 <em>POST</em> 请求后建议做一次重定向，这样可以避免客户端在刷新或点击后退按钮时重复提交。</p>
+</div>
+<div class="paragraph">
+<p>我们在前面见过 <code>redirect:</code> 的用法。当一个控制器方法返回以 <code>redirect:</code> 开头的字符串，这个字符串不会被用来查找视图，
+而是直接作为浏览器重定向到的路径（返回302状态码，并设置HTTP头的location字段为重定向地址）。</p>
+</div>
+<div class="paragraph">
+<p>重定向实际上是两个请求，那么怎样在后续请求中继续使用之前请求中的数据呢？有两种途径可以解决：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>使用URL模板，并将数据作为路径变量（ <em>path variable</em> ）或是请求参数（ <em>query parameter</em> ）</p>
+</li>
+<li>
+<p>使用 <em>flash 属性</em> 传递数据</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_使用url模板"><a class="anchor" href="#_使用url模板"></a>使用URL模板</h5>
+<div class="paragraph">
+<p>使用路径变量和请求参数的方式看上去实现很简单，把参数作为字符串拼接起来就可以了。
+但在URL和SQL中使用字符串拼接并不安全。</p>
+</div>
+<div class="paragraph">
+<p>Spring中提供了URL模板的方式：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(value="/register", method=POST)
+public String processRegistration(Spitter spitter, Model model) {
+  spitterRepository.save(spitter);
+  model.addAttribute("username", spitter.getUsername());             <i class="conum" data-value="1"></i><b>(1)</b>
+  model.addAttribute("spitterId", spitter.getId());                  <i class="conum" data-value="2"></i><b>(2)</b>
+  return "redirect:/spitter/{username}";                             <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>必须在 <em>Model</em> 中设置占位符 <em>username</em> 的值</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><em>spitterId</em> 并没有对应的占位符，因此将作为请求参数拼接到路径后如 <code>/spitter/habuma?spitterId=42</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><em>username</em> 中所有不安全（或非法）的字符将被转义</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>这种传数据的方式简单直接，但只对简单的字符串和数值类型友好，复杂的数据就不方便了。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_使用_flash_属性"><a class="anchor" href="#_使用_flash_属性"></a>使用 flash 属性</h5>
+<div class="paragraph">
+<p>这种方式适用于传递复杂的对象数据。Spring负责将这些数据临时保存到session中，并在重定向后清理掉。</p>
+</div>
+<div class="paragraph">
+<p>Spring 3.1 中新增了一个 <em>Model</em> 的子接口 <em>RedirectAttributes</em> 用于设置 <em>flash</em> 属性，
+比如可以使用 <em>addFlashAttribute()</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 第一个请求
+@RequestMapping(value="/register", method=POST)
+public String processRegistration(Spitter spitterA, RedirectAttributes model) {
+  spitterRepository.save(spitterA);
+  model.addAttribute("username", spitterA.getUsername());
+  model.addFlashAttribute("spitter", spitterA);                       <i class="conum" data-value="1"></i><b>(1)</b>
+  return "redirect:/spitter/{username}";
+}
 
+// 被重定向到的请求
+@RequestMapping(value="/spitter/{username}", method=GET)
+public String showSpitterProfile(@PathVariable String username, Model model) {
+  if (!model.containsAttribute("spitter")) {
+    model.addAttribute(
+    spitterRepository.findByUsername(username));
+  }
+  return "profile";
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>或者也可以使用 <code>model.addFlashAttribute(spitterA);</code> ，这样将根据类型推导出key的值为 <em>spitter</em></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>第一个请求处理结束后， <em>Model</em> 中的 <em>flash</em> 属性被存入到session中。
+而在被重定向到的请求处理之前，所有的 <em>flash</em> 属性从session中取出（然后清理掉）并放入该请求中的 <em>Model</em> 里。</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2968,7 +3096,466 @@ public class AppWideExceptionHandler {
 <div class="sect1">
 <h2 id="_spring_backend"><a class="anchor" href="#_spring_backend"></a>4. Spring Backend</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_使用spring_jdbc玩转数据库"><a class="anchor" href="#_使用spring_jdbc玩转数据库"></a>4.1. 使用Spring JDBC玩转数据库</h3>
+<div class="sect3">
+<h4 id="_spring的数据访问思想"><a class="anchor" href="#_spring的数据访问思想"></a>4.1.1. Spring的数据访问思想</h4>
+<div class="sect4">
+<h5 id="_了解spring数据访问层的异常体系"><a class="anchor" href="#_了解spring数据访问层的异常体系"></a>了解spring数据访问层的异常体系</h5>
+<div class="paragraph">
+<p>我们知道在使用JDBC的时候必须得捕获 <em>SQLException</em> ，但从这个异常并不能获知错误的细节或如何处理。
+该异常可能由以下情况导致：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>应用无法连接到数据库</p>
+</li>
+<li>
+<p>正在执行的查询语句存在语法错误</p>
+</li>
+<li>
+<p>查询中使用的表或列名不存在</p>
+</li>
+<li>
+<p>执行 <em>insert</em> 或 <em>update</em> 时违背数据库的约束条件</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>对异常的处理既要能捕获到具体的细节，又不能太依赖框架的实现（比如Hibernate的异常体系），
+这正是 Spring 的异常所解决的问题。</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. JDBC的异常体系 vs Spring 的异常体系</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">JDBC 异常类</th>
+<th class="tableblock halign-left valign-top">Spring 异常类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BatchUpdateException
+</p><p class="tableblock">DataTruncation
+</p><p class="tableblock">SQLException
+</p><p class="tableblock">SQLWarning</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BadSqlGrammarException
+</p><p class="tableblock">CannotAcquireLockException
+</p><p class="tableblock">CannotSerializeTransactionException
+</p><p class="tableblock">CannotGetJdbcConnectionException
+</p><p class="tableblock">CleanupFailureDataAccessException
+</p><p class="tableblock">ConcurrencyFailureException
+</p><p class="tableblock">DataAccessException
+</p><p class="tableblock">DataAccessResourceFailureException
+</p><p class="tableblock">DataIntegrityViolationException
+</p><p class="tableblock">DataRetrievalFailureException
+</p><p class="tableblock">DataSourceLookupApiUsageException
+</p><p class="tableblock">DeadlockLoserDataAccessException
+</p><p class="tableblock">DuplicateKeyException
+</p><p class="tableblock">EmptyResultDataAccessException
+</p><p class="tableblock">IncorrectResultSizeDataAccessException
+</p><p class="tableblock">IncorrectUpdateSemanticsDataAccessException
+</p><p class="tableblock">InvalidDataAccessApiUsageException
+</p><p class="tableblock">InvalidDataAccessResourceUsageException
+</p><p class="tableblock">InvalidResultSetAccessException
+</p><p class="tableblock">JdbcUpdateAffectedIncorrectNumberOfRowsException
+</p><p class="tableblock">LobRetrievalFailureException
+</p><p class="tableblock">NonTransientDataAccessResourceException
+</p><p class="tableblock">OptimisticLockingFailureException
+</p><p class="tableblock">PermissionDeniedDataAccessException
+</p><p class="tableblock">PessimisticLockingFailureException
+</p><p class="tableblock">QueryTimeoutException
+</p><p class="tableblock">RecoverableDataAccessException
+</p><p class="tableblock">SQLWarningException
+</p><p class="tableblock">SqlXmlFeatureNotImplementedException
+</p><p class="tableblock">TransientDataAccessException
+</p><p class="tableblock">TransientDataAccessResourceException
+</p><p class="tableblock">TypeMismatchDataAccessException
+</p><p class="tableblock">UncategorizedDataAccessException
+</p><p class="tableblock">UncategorizedSQLException</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Spring 的异常类都继承于 <em>DataAccessException</em> ，而 <em>DataAccessException</em> 是非检查异常（ <em>unchecked exception</em> ）。
+Spring的立场是：多数异常应该抛出而不是被捕获，Spring将捕获处理具体的异常与否交由开发者来决定。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_对数据的访问模版化"><a class="anchor" href="#_对数据的访问模版化"></a>对数据的访问模版化</h5>
+<div class="paragraph">
+<p>Spring自带的一些数据访问模版类：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 70%;">
+<col style="width: 30%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">模板类（ <code>org.springframework.*</code> `）</th>
+<th class="tableblock halign-left valign-top">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">jca.cci.core.CciTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JCA CCI 连接</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">jdbc.core.JdbcTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC连接</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">jdbc.core.namedparam.NamedParameterJdbcTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC连接，支持命名参数</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">jdbc.core.simple.SimpleJdbcTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDBC连接，使用Java 5简化（自Spring 3.1已废弃）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">orm.hibernate3.HibernateTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hibernate 3.x+ sessions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">orm.ibatis.SqlMapClientTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iBATIS SqlMap clients</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">orm.jdo.JdoTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDO</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">orm.jpa.JpaTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JPA实体管理器</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_配置数据源"><a class="anchor" href="#_配置数据源"></a>4.1.2. 配置数据源</h4>
+<div class="sect4">
+<h5 id="_使用jndi数据源"><a class="anchor" href="#_使用jndi数据源"></a>使用JNDI数据源</h5>
+<div class="paragraph">
+<p>使用Spring <em>jee</em> 命名空间中的 <code>&lt;jee:jndi-lookup&gt;</code> 元素可以获取JNDI中的任意对象——包括数据源——并将其作为Bean以供使用。</p>
+</div>
+<div class="paragraph">
+<p>在XML中配置为：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;jee:jndi-lookup id="dataSource"
+    jndi-name="/jdbc/SpitterDS"                                      <i class="conum" data-value="1"></i><b>(1)</b>
+    resource-ref="true" /&gt;                                           <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>用于从JNDI中查找的名称</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>若应用运行在java应用服务器中，将 <em>resource-ref</em> 设为 <em>true</em> 会在 <em>jndi-name</em> 中添加 <code>java:comp/env/</code> 前缀</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在Java中配置需要使用 <strong><em>JndiObjectFactoryBean</em></strong> 从JNDI中获取数据源：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public JndiObjectFactoryBean dataSource() {
+  JndiObjectFactoryBean jndiObjectFB = new JndiObjectFactoryBean();
+  jndiObjectFB.setJndiName("jdbc/SpittrDS");
+  jndiObjectFB.setResourceRef(true);
+  jndiObjectFB.setProxyInterface(javax.sql.DataSource.class);
+  return jndiObjectFB;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_使用池化_pooled_数据源"><a class="anchor" href="#_使用池化_pooled_数据源"></a>使用池化（pooled）数据源</h5>
+<div class="paragraph">
+<p>现今有很多开源的数据源连接池库，其中大多数在Spring中的配置都类似于Spring自带的 <em>DriverManagerDataSource</em> 和
+<em>SingleConnectionDataSource</em> 。比如 DBCP 的 <em>BasicDataSource</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+      p:driverClassName="org.h2.Driver"
+      p:url="jdbc:h2:tcp://localhost/~/spitter"
+      p:username="sa"
+      p:password=""
+      p:initialSize="5"
+      p:maxActive="10" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>或是在Java中：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public BasicDataSource dataSource() {
+  BasicDataSource ds = new BasicDataSource();
+  ds.setDriverClassName("org.h2.Driver");
+  ds.setUrl("jdbc:h2:tcp://localhost/~/spitter");
+  ds.setUsername("sa");
+  ds.setPassword("");
+  ds.setInitialSize(5);
+  ds.setMaxActive(10);
+  return ds;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>更多的属性配置项建议阅读相关连接池库的文档。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_使用基于jdbc驱动的数据源"><a class="anchor" href="#_使用基于jdbc驱动的数据源"></a>使用基于JDBC驱动的数据源</h5>
+<div class="paragraph">
+<p>Spring中提供了三种基于驱动的数据源：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>DriverManagerDataSource</em></strong> ——每次请求时返回一个 <strong>新</strong> 连接，该连接是非池化的。</p>
+</li>
+<li>
+<p><strong><em>SimpleDriverDataSource</em></strong> ——类似于 <em>DriverManagerDataSource</em> ，不过它直接使用JDBC驱动以避免在特定环境下类加载的问题。</p>
+</li>
+<li>
+<p><strong><em>SingleConnectionDataSource</em></strong> ——每次请求时返回 <strong>同一个</strong> 连接。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>这些配置起来跟DBCP的数据源一样简单，比如在Java中配置 <em>DriverManagerDataSource</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public DataSource dataSource() {
+  DriverManagerDataSource ds = new DriverManagerDataSource();
+  ds.setDriverClassName("org.h2.Driver");
+  ds.setUrl("jdbc:h2:tcp://localhost/~/spitter");
+  ds.setUsername("sa");
+  ds.setPassword("");
+  return ds;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>等效的XML配置为：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="dataSource"
+      class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+      p:driverClassName="org.h2.Driver"
+      p:url="jdbc:h2:tcp://localhost/~/spitter"
+      p:username="sa"
+      p:password="" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这类数据源适用于小型应用或开发环境，不要在其他情况下使用。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_使用嵌入式数据源"><a class="anchor" href="#_使用嵌入式数据源"></a>使用嵌入式数据源</h5>
+<div class="paragraph">
+<p>嵌入式数据库非常适合测试或开发环境：不用连接到外部的数据库服务器，每次重启应用后会被重置。</p>
+</div>
+<div class="paragraph">
+<p>如下是使用Spring <strong>jdbc</strong> 命名空间来配置一个预加载测试数据的H2数据库的示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xsi:schemaLocation="http://www.springframework.org/schema/jdbc
+      http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
+  &lt;jdbc:embeddeddatabase id="dataSource" type="H2"&gt;                             <i class="conum" data-value="1"></i><b>(1)</b>
+     &lt;jdbc:script location="com/habuma/spitter/db/jdbc/schema.sql"/&gt;
+     &lt;jdbc:script location="com/habuma/spitter/db/jdbc/test-data.sql"/&gt;
+  &lt;/jdbc:embedded-database&gt;
+
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><em>type</em> 还可以设为 DERBY 来嵌入 Apache Derby 数据库；通过 <em>id</em> 可获取该嵌入数据源</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在Java中的配置：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public DataSource dataSource() {
+return new EmbeddedDatabaseBuilder()
+            .setType(EmbeddedDatabaseType.H2)
+            .addScript("classpath:schema.sql")
+            .addScript("classpath:test-data.sql")
+            .build();
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_使用profile选择数据源"><a class="anchor" href="#_使用profile选择数据源"></a>使用profile选择数据源</h5>
+<div class="paragraph">
+<p>使用Spring的profile非常适合于在不同环境下切换不同的数据源。</p>
+</div>
+<div class="paragraph">
+<p>比如在Java配置中：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package org.calvin.springfast.config;
+import org.apache.commons.dbcp.BasicDataSource;
+import javax.sql.DataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jndi.JndiObjectFactoryBean;
+
+@Configuration
+public class DataSourceConfiguration {
+
+  @Profile("development")
+  @Bean
+  public DataSource embeddedDataSource() {
+    return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("classpath:schema.sql")
+                .addScript("classpath:test-data.sql")
+                .build();
+  }
+
+  @Profile("qa")
+  @Bean
+  public DataSource Data() {
+    BasicDataSource ds = new BasicDataSource();
+    ds.setDriverClassName("org.h2.Driver");
+    ds.setUrl("jdbc:h2:tcp://localhost/~/spitter");
+    ds.setUsername("sa");
+    ds.setPassword("");
+    ds.setInitialSize(5);
+    ds.setMaxActive(10);
+    return ds;
+  }
+
+  @Profile("production")
+  @Bean
+    public DataSource dataSource() {
+    JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
+    jndiObjectFactoryBean.setJndiName("jdbc/SpittrDS");
+    jndiObjectFactoryBean.setResourceRef(true);
+    jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);
+    return (DataSource) jndiObjectFactoryBean.getObject();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>等效的XML配置为：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+      xmlns:jee="http://www.springframework.org/schema/jee"
+      xmlns:p="http://www.springframework.org/schema/p"
+      xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+      http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+
+  &lt;beans profile="development"&gt;
+    &lt;jdbc:embeddeddatabase id="dataSource" type="H2"&gt;
+      &lt;jdbc:script location="com/hab uma/spitter/db/jdbc/schema.sql"/&gt;
+      &lt;jdbc:script location="com/habum a/spitter/db/jdbc/test-data.sql"/&gt;
+    &lt;/jdbc:embeddeddatabase&gt;
+  &lt;/beans&gt;
+
+  &lt;beans profile="qa"&gt;
+    &lt;bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          p:driverClassName="org.h2.Driver"
+          p:url="jdbc:h2:tcp://localhost/~/spitter"
+          p:username="sa" p:password=""
+          p:initialSize="5" p:maxActive="10"/&gt;
+  &lt;/beans&gt;
+
+  &lt;beans profile="production"&gt;
+    &lt;jee:jndi-lookup id="dataSource" jndi-name="/jdbc/SpitterDS" resource-ref="true"/&gt;
+  &lt;/beans&gt;
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_使用_spring_jdbc"><a class="anchor" href="#_使用_spring_jdbc"></a>4.1.3. 使用 Spring JDBC</h4>
+<div class="paragraph">
+<p>经使用证明比较好的存储数据方式还是旧而好的JDBC。JDBC毕竟不需要额外掌握一种框架，而且基于SQL，
+可以很方便的调整优化，完全掌控应用对数据的存取。</p>
+</div>
+<div class="paragraph">
+<p>Spring JDBC 减少了直接使用JDBC时连接管理和异常处理的代码，Spring提供了三个JDBC模板类：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>JdbcTemplate</em></strong> ——</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_使用orm框架"><a class="anchor" href="#_使用orm框架"></a>4.2. 使用ORM框架</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_对nosql的支持"><a class="anchor" href="#_对nosql的支持"></a>4.3. 对NOSQL的支持</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_缓存数据"><a class="anchor" href="#_缓存数据"></a>4.4. 缓存数据</h3>
+
+</div>
 </div>
 </div>
 <div class="sect1">
