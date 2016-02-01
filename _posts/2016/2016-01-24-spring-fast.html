@@ -180,11 +180,22 @@ tags:
 </ul>
 </li>
 <li><a href="#_使用orm框架">4.2. 使用ORM框架</a></li>
-<li><a href="#_对nosql的支持">4.3. 对NOSQL的支持</a></li>
-<li><a href="#_缓存数据">4.4. 缓存数据</a></li>
+<li><a href="#_事务管理">4.3. 事务管理</a></li>
+<li><a href="#_对nosql的支持">4.4. 对NOSQL的支持</a></li>
+<li><a href="#_缓存数据">4.5. 缓存数据</a></li>
 </ul>
 </li>
-<li><a href="#_spring_integration">5. Spring Integration</a></li>
+<li><a href="#_spring_integration">5. Spring Integration</a>
+<ul class="sectlevel2">
+<li><a href="#_远程服务">5.1. 远程服务</a></li>
+<li><a href="#_使用spring_mvc创建rest_api">5.2. 使用Spring MVC创建REST API</a></li>
+<li><a href="#_spring中的消息">5.3. Spring中的消息</a></li>
+<li><a href="#_使用websocket和stomp发送消息">5.4. 使用Websocket和STOMP发送消息</a></li>
+<li><a href="#_使用spring发送email">5.5. 使用Spring发送Email</a></li>
+<li><a href="#_用jmx管理spring_bean">5.6. 用JMX管理Spring Bean</a></li>
+<li><a href="#_通过spring_boot简化spring开发">5.7. 通过Spring Boot简化Spring开发</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -3409,7 +3420,7 @@ public DataSource dataSource() {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><em>type</em> 还可以设为 DERBY 来嵌入 Apache Derby 数据库；通过 <em>id</em> 可获取该嵌入数据源</td>
+<td><em>type</em> 还可以设为 DERBY 来嵌入 Apache Derby 数据库；通过 <em>id</em> 可获取/注入该嵌入式数据源</td>
 </tr>
 </table>
 </div>
@@ -3499,9 +3510,12 @@ public class DataSourceConfiguration {
       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
       xmlns:jee="http://www.springframework.org/schema/jee"
       xmlns:p="http://www.springframework.org/schema/p"
-      xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
-      http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
+      xsi:schemaLocation="http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+        http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"&gt;
 
   &lt;beans profile="development"&gt;
     &lt;jdbc:embeddeddatabase id="dataSource" type="H2"&gt;
@@ -3519,7 +3533,9 @@ public class DataSourceConfiguration {
   &lt;/beans&gt;
 
   &lt;beans profile="production"&gt;
-    &lt;jee:jndi-lookup id="dataSource" jndi-name="/jdbc/SpitterDS" resource-ref="true"/&gt;
+    &lt;jee:jndi-lookup id="dataSource"
+          jndi-name="/jdbc/SpitterDS"
+          resource-ref="true"/&gt;
   &lt;/beans&gt;
 &lt;/beans&gt;</code></pre>
 </div>
@@ -3533,12 +3549,18 @@ public class DataSourceConfiguration {
 可以很方便的调整优化，完全掌控应用对数据的存取。</p>
 </div>
 <div class="paragraph">
-<p>Spring JDBC 减少了直接使用JDBC时连接管理和异常处理的代码，Spring提供了三个JDBC模板类：</p>
+<p>Spring JDBC 减少了直接使用JDBC时连接管理和异常处理的代码，并提供了三个JDBC模板类：</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><em>JdbcTemplate</em></strong> ——</p>
+<p><strong><em>JdbcTemplate</em></strong> ——Spirng JDBC模板类的基本款，提供基于索引参数的查询</p>
+</li>
+<li>
+<p><strong><em>NamedParameterJdbcTemplate</em></strong> ——提供可绑定命名参数的查询</p>
+</li>
+<li>
+<p><strong><em>SimpleJdbcTemplate</em></strong> ——利用Java 5的特性简化JDBC模板的使用，从Spring 3.1开始已经废弃</p>
 </li>
 </ul>
 </div>
@@ -3549,11 +3571,15 @@ public class DataSourceConfiguration {
 
 </div>
 <div class="sect2">
-<h3 id="_对nosql的支持"><a class="anchor" href="#_对nosql的支持"></a>4.3. 对NOSQL的支持</h3>
+<h3 id="_事务管理"><a class="anchor" href="#_事务管理"></a>4.3. 事务管理</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_缓存数据"><a class="anchor" href="#_缓存数据"></a>4.4. 缓存数据</h3>
+<h3 id="_对nosql的支持"><a class="anchor" href="#_对nosql的支持"></a>4.4. 对NOSQL的支持</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_缓存数据"><a class="anchor" href="#_缓存数据"></a>4.5. 缓存数据</h3>
 
 </div>
 </div>
@@ -3561,8 +3587,35 @@ public class DataSourceConfiguration {
 <div class="sect1">
 <h2 id="_spring_integration"><a class="anchor" href="#_spring_integration"></a>5. Spring Integration</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_远程服务"><a class="anchor" href="#_远程服务"></a>5.1. 远程服务</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_使用spring_mvc创建rest_api"><a class="anchor" href="#_使用spring_mvc创建rest_api"></a>5.2. 使用Spring MVC创建REST API</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_spring中的消息"><a class="anchor" href="#_spring中的消息"></a>5.3. Spring中的消息</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_使用websocket和stomp发送消息"><a class="anchor" href="#_使用websocket和stomp发送消息"></a>5.4. 使用Websocket和STOMP发送消息</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_使用spring发送email"><a class="anchor" href="#_使用spring发送email"></a>5.5. 使用Spring发送Email</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_用jmx管理spring_bean"><a class="anchor" href="#_用jmx管理spring_bean"></a>5.6. 用JMX管理Spring Bean</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_通过spring_boot简化spring开发"><a class="anchor" href="#_通过spring_boot简化spring开发"></a>5.7. 通过Spring Boot简化Spring开发</h3>
 <div class="paragraph">
 <p>&nbsp;[TBD]</p>
+</div>
 </div>
 </div>
 </div>
