@@ -106,7 +106,7 @@ tags:
 <h1>Spring 快速上手</h1>
 <div class="details">
 <span id="author" class="author">Calvin Yu</span><br>
-<span id="revdate">since 2015-11-22 ，last-update 2016-01-31</span>
+<span id="revdate">since 2015-11-22 ，last-update 2016-05-01</span>
 </div>
 <div id="toc" class="toc">
 <div id="toctitle">目录</div>
@@ -182,15 +182,34 @@ tags:
 <li><a href="#_使用orm框架">4.2. 使用ORM框架</a></li>
 <li><a href="#_事务管理">4.3. 事务管理</a></li>
 <li><a href="#_对nosql的支持">4.4. 对NOSQL的支持</a></li>
-<li><a href="#_缓存数据">4.5. 缓存数据</a></li>
+<li><a href="#_缓存数据">4.5. 缓存数据</a>
+<ul class="sectlevel3">
+<li><a href="#_开启缓存">4.5.1. 开启缓存</a></li>
+<li><a href="#_为方法添加缓存注解">4.5.2. 为方法添加缓存注解</a></li>
+<li><a href="#_在xml中配置">4.5.3. 在XML中配置</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_spring_integration">5. Spring Integration</a>
 <ul class="sectlevel2">
-<li><a href="#_远程服务">5.1. 远程服务</a></li>
-<li><a href="#_使用spring_mvc创建rest_api">5.2. 使用Spring MVC创建REST API</a></li>
+<li><a href="#_远程服务">5.1. 远程服务</a>
+<ul class="sectlevel3">
+<li><a href="#_rmi">5.1.1. RMI</a></li>
+</ul>
+</li>
+<li><a href="#_使用spring_mvc创建rest_api">5.2. 使用Spring MVC创建REST API</a>
+<ul class="sectlevel3">
+<li><a href="#_创建第一个rest服务">5.2.1. 创建第一个REST服务</a></li>
+<li><a href="#_不止是提供资源">5.2.2. 不止是提供资源</a></li>
+</ul>
+</li>
 <li><a href="#_spring中的消息">5.3. Spring中的消息</a></li>
-<li><a href="#_使用websocket和stomp发送消息">5.4. 使用Websocket和STOMP发送消息</a></li>
+<li><a href="#_使用websocket和stomp发送消息">5.4. 使用Websocket和STOMP发送消息</a>
+<ul class="sectlevel3">
+<li><a href="#_使用spirng的底层websocket_api">5.4.1. 使用Spirng的底层Websocket API</a></li>
+</ul>
+</li>
 <li><a href="#_使用spring发送email">5.5. 使用Spring发送Email</a></li>
 <li><a href="#_用jmx管理spring_bean">5.6. 用JMX管理Spring Bean</a></li>
 <li><a href="#_通过spring_boot简化spring开发">5.7. 通过Spring Boot简化Spring开发</a></li>
@@ -3545,7 +3564,7 @@ public class DataSourceConfiguration {
 <div class="sect3">
 <h4 id="_使用_spring_jdbc"><a class="anchor" href="#_使用_spring_jdbc"></a>4.1.3. 使用 Spring JDBC</h4>
 <div class="paragraph">
-<p>经使用证明比较好的存储数据方式还是旧而好的JDBC。JDBC毕竟不需要额外掌握一种框架，而且基于SQL，
+<p>经考验证明比较好的存储数据方式还是JDBC。JDBC毕竟不需要额外掌握一种框架，而且基于SQL，
 可以很方便的调整优化，完全掌控应用对数据的存取。</p>
 </div>
 <div class="paragraph">
@@ -3564,6 +3583,20 @@ public class DataSourceConfiguration {
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>配置 <em>JdbcTemplate</em> 只要提供一个 <em>DataSource</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+  return new JdbcTemplate(dataSource);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>&nbsp;[TBD]</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -3580,7 +3613,527 @@ public class DataSourceConfiguration {
 </div>
 <div class="sect2">
 <h3 id="_缓存数据"><a class="anchor" href="#_缓存数据"></a>4.5. 缓存数据</h3>
+<div class="sect3">
+<h4 id="_开启缓存"><a class="anchor" href="#_开启缓存"></a>4.5.1. 开启缓存</h4>
+<div class="paragraph">
+<p>Spring中使用缓存有两种形式：基于注解和基于XML。</p>
+</div>
+<div class="paragraph">
+<p>如果使用Java配置方式，可以在配置类添加 <code>@EnableCaching</code> 开启缓存：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableCaching                                                       <i class="conum" data-value="1"></i><b>(1)</b>
+public class CachingConfig {
+  @Bean
+  public CacheManager cacheManager() {
+    return new ConcurrentMapCacheManager();                          <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>开启缓存功能</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>声明缓存管理器</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在XML中配置如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:cache="http://www.springframework.org/schema/cache"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/cache
+    http://www.springframework.org/schema/cache/spring-cache.xsd"&gt;
 
+  &lt;cache:annotation-driven /&gt;
+  &lt;bean id="cacheManager"
+        class="org.springframework.cache.concurrent.ConcurrentMapCacheManager" /&gt;
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>@EnableCaching</code> 和 <code>&lt;cache:annotation-driven /&gt;</code> 在底层是一样的工作机制，它们都是创建一层代理，
+根据缓存注解的类型和状态来获取、更新或删除缓存。缓存管理器的作用是用于集成某个特定的缓存实现。</p>
+</div>
+<div class="sect4">
+<h5 id="_配置缓存管理器"><a class="anchor" href="#_配置缓存管理器"></a>配置缓存管理器</h5>
+<div class="paragraph">
+<p>Spring 3.1 自带了5个开箱即用的缓存管理器实现：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SimpleCacheManager</p>
+</li>
+<li>
+<p>NoOpCacheManager</p>
+</li>
+<li>
+<p>ConcurrentMapCacheManager</p>
+</li>
+<li>
+<p>CompositeCacheManager</p>
+</li>
+<li>
+<p>EhCacheCacheManager</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Spring 3.2 新增一个用于兼容 JCache (JSR-107) 缓存的管理器，除了这些在Spring核心框架中的，Spring Data也提供了两个：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RedisCacheManager （Spring Data Redis项目）</p>
+</li>
+<li>
+<p>GemfireCacheManager （Spring Data GemFire项目）</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>使用哪种缓存管理器取决于想使用的缓存实现，缓存管理器在使用时必须在Spring的上下文中声明为Bean。</p>
+</div>
+<div class="paragraph">
+<p>下面代码展示如何配置 <em>EhCacheCacheManager</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package org.calvin.springfast.cache;
+
+import net.sf.ehcache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+
+@Configuration
+@EnableCaching
+public class CachingConfig {
+  @Bean
+  public EhCacheCacheManager cacheManager(CacheManager cm) {         <i class="conum" data-value="1"></i><b>(1)</b>
+    return new EhCacheCacheManager(cm);
+  }
+
+  @Bean
+  public EhCacheManagerFactoryBean ehcache() {                       <i class="conum" data-value="2"></i><b>(2)</b>
+    EhCacheManagerFactoryBean ehCacheFactoryBean = new EhCacheManagerFactoryBean();
+    ehCacheFactoryBean.setConfigLocation(
+      new ClassPathResource("org/calvin/springfast/cache/ehcache.xml"));
+    return ehCacheFactoryBean;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>注意Spring中的 <em>EhCacheCacheManager</em> ，在配置时需要用到Ehcache的 <em>CacheManager</em> 。</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><em>EhCacheManagerFactoryBean</em> 是个工厂Bean，用于生成Ehcache的 <em>CacheManager</em> 。</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如果使用Redis，可以用Spring Data Redis项目中的 <em>RedisCacheManager</em> ，不过需要同时配置 <em>RedisTemplate</em> 和
+<em>RedisConnectionFactory</em> 的实现类（比如 <em>JedisConnectionFactory</em> ）：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package com.myapp;
+
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+
+@Configuration
+@EnableCaching
+public class CachingConfig {
+  @Bean
+  public CacheManager cacheManager(RedisTemplate redisTemplate) {
+    return new RedisCacheManager(redisTemplate);
+  }
+  @Bean
+  public JedisConnectionFactory redisConnectionFactory() {
+    JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+    jedisConnectionFactory.afterPropertiesSet();
+    return jedisConnectionFactory;
+  }
+  @Bean
+  public RedisTemplate&lt;String, String&gt; redisTemplate(RedisConnectionFactory redisCF) {
+    RedisTemplate&lt;String, String&gt; redisTemplate = new RedisTemplate&lt;String, String&gt;();
+    redisTemplate.setConnectionFactory(redisCF);
+    redisTemplate.afterPropertiesSet();
+    return redisTemplate;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>另外还可以使用 <em>CompositeCacheManager</em> 组合多个缓存管理器并从其中查询内容。</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_为方法添加缓存注解"><a class="anchor" href="#_为方法添加缓存注解"></a>4.5.2. 为方法添加缓存注解</h4>
+<div class="paragraph">
+<p>Spring提供了一些缓存注解：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 70%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">注解</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">@Cacheable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">告知Spring在调用方法前首先从缓存中查找内容作为该方法的返回值。在缓存里找到就返回，
+否则就调用方法并将方法的返回值放入缓存中</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">@CachePut</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指示Spring将方法的返回值放入缓存。不会在方法调用前检查缓存是否存在该值，总是调用方法。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">@CacheEvict</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指示Spring将某个或某些缓存内容释放</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">@Caching</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一个用于将其他的缓存注解作为一组来使用的注解</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>可以通过 <code>@Cacheable</code> 和 <code>@CachePut</code> 往缓存里添加值，两者的不同可以从上表中看出来，
+但两个注解有些相同的属性：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">属性</th>
+<th class="tableblock halign-left valign-middle">类型</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">value</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">String[]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">缓存使用的名字，注意不是key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">condition</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SpEL表达式，如果为 <em>false</em> ，被注解的方法将不启用缓存功能</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">key</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SpEL表达式，用于定制key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">unless</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SpEL表达式，如果为 <em>true</em> ，方法的返回值将不被添加到缓存</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>比如可以这么使用 <code>@Cacheable</code> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Cacheable("spittleCache")
+public Spittle findOne(long id) {                                    <i class="conum" data-value="1"></i><b>(1)</b>
+  try {
+    return jdbcTemplate.queryForObject(
+              SELECT_SPITTLE_BY_ID,
+              new SpittleRowMapper(),
+              id);
+  } catch (EmptyResultDataAccessException e) {
+    return null;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>参数 <em>id</em> 的值将作为缓存内容的键值（key）</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如果将注解 <code>@Cacheable</code> 添加到接口的方法上，那么该接口的所有实现类都将继承该注解及其规则。</p>
+</div>
+<div class="paragraph">
+<p><code>@Cacheable</code> 和 <code>@CachePut</code> 有个 <em>key</em> 属性可通过使用SpEL表达式来自定义缓存key的生成。
+Spring提供了许多SpEL的扩展：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 70%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">表达式</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#root.args</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">可获取到传给被缓存方法的参数，以数组的形式</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#root.caches</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">方法执行的缓存，以数组形式</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#root.target</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">目标对象</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#root.targetClass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">目标对象的class，是 #root.target.class的简写</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#root.method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被缓存的方法</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#root.methodName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被缓存的方法的名称，#root.method.name的简写</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#result</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">被缓存的方法返回的值（该属性 <code>@Cacheable</code> 不可用）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">#Argument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">该方法任何参数的名称或索引</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>比如可以将 <em>key</em> 定义为返回对象的id属性：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@CachePut(value="spittleCache", key="#result.id")                    <i class="conum" data-value="1"></i><b>(1)</b>
+Spittle save(Spittle spittle);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>spittle对象的id是在保存后由数据库生成的，因此得使用 <code>#result.id</code> 来获取</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在方法上添加缓存注解实际上会由Spring对该方法创建一个Around切面，因此可以有条件性地控制缓存的开启，
+也就是使用之前图表中的 <em>unless</em> 和 <em>condition</em> 两个属性。</p>
+</div>
+<div class="paragraph">
+<p>如果 <em>unless</em> 的 SpEL 表达式值为 <em>true</em> ，那么被注解方法的返回值将不被放入缓存，类似的，
+如果 <em>condition</em> 的 SpEL 表达式值为 <em>false</em> ，那么将不在被注解的方法上启用缓存功能将。</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>这两个属性表面看来作用一样，但其实 <em>unless</em> 仅是阻止返回值被放入缓存，
+但被注解的方法在调用时依然会去查询缓存，并在缓存中找到值后返回。
+而 <em>condition</em> 是在 <em>false</em> 时不使用缓存。比如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Cacheable(value="spittleCache"
+       unless="#result.message.contains('NoCache')")
+Spittle findOne(long id);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在返回的Spittle对象中如果其message属性包含 <em>NoCache</em> ，则该对象将不会放入缓存中。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>@CacheEvict</code> 用于缓存的移除（比如在数据被删掉时），与 <em>Cacheable</em> 和 <em>CachePut</em> 不同的是，
+<em>CacheEvict</em> 可以用在返回 <em>void</em> 的方法上（毕竟 <em>Cacheable</em> 和 <em>CachePut</em> 需要将返回值放入缓存 ）。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_在xml中配置"><a class="anchor" href="#_在xml中配置"></a>4.5.3. 在XML中配置</h4>
+<div class="paragraph">
+<p>对于无法接触到源码的Bean，添加缓存注解是不可行的，这样就得借助在XML中配置的方式来解决。</p>
+</div>
+<div class="paragraph">
+<p>在XML中配置需要用到 <em>cache</em> 命名空间，另外因为添加缓存必须使用切面，因此 <em>aop</em> 命名空间也要用到，
+最基本的配置如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/cache
+    http://www.springframework.org/schema/cache/spring-cache.xsd"&gt;
+
+    &lt;!-- 这里放置缓存相关的配置 --&gt;
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>cache</em> 命名空间中提供的一些可能会用到的配置元素如下表：</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 70%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">配置元素</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">&lt;cache:annotation-driven&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启用注解驱动的缓存配置。等价于Java配置中的 <code>@EnableCaching</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">&lt;cache:advice&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义用于配置缓存的通知，配合 <code>&lt;aop:advisor&gt;</code> 使用</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">&lt;cache:caching&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在缓存通知中定义一些与缓存相关的规则</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">&lt;cache:cacheable&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">指定某个方法可被缓存，等价于 <code>@Cacheable</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">&lt;cache:cache-put&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不多说了，等价于 <code>@CachePut</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">&lt;cache:cache-evict&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">等价于 <code>@CacheEvict</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>举个例子示范一下用法：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd"&gt;
+
+    &lt;aop:config&gt;
+      &lt;aop:advisor advice-ref="cacheAdvice"                                          <i class="conum" data-value="1"></i><b>(1)</b>
+        pointcut=
+            "execution(* com.springfast.spittr.db.SpittleRepository.*(..))"/&gt;
+    &lt;/aop:config&gt;
+
+    &lt;cache:advice id="cacheAdvice"&gt;
+        &lt;cache:caching&gt;
+          &lt;cache:cacheable cache="spittleCache" method="findRecent" /&gt;               <i class="conum" data-value="2"></i><b>(2)</b>
+          &lt;cache:cacheable cache="spittleCache" method="findOne" /&gt;
+          &lt;cache:cacheable cache="spittleCache" method="findBySpitterId" /&gt;
+
+          &lt;cache:cache-put   cache="spittleCache" method="save" key="#result.id" /&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+          &lt;cache:cache-evict cache="spittleCache" method="remove" /&gt;
+        &lt;/cache:caching&gt;
+    &lt;/cache:advice&gt;
+
+    &lt;bean id="cacheManager"
+          class="org.springframework.cache.concurrent.ConcurrentMapCacheManager" /&gt;
+&lt;/beans&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>将缓存的通知绑定到该切面上</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>&lt;cache:cacheable&gt;</code> 与 <code>&lt;cache:cache-put&gt;</code> 等的 <em>cache</em> 属性值是重复的，
+可以将其放到上层中，如 <code>&lt;cache:caching cache="spittleCache" &gt;&#8230;&#8203;.&lt;/cache:caching&gt;</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>需要注意的是 <code>&lt;cache:advice&gt;</code> 有个 <em>cache-manager</em> 属性，默认值为 <em>cacheManager</em> ，
+所以如果像上面代码那样可以不用设置，但如果缓存管理器的ID不等于默认值，则必须设置。</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3589,11 +4142,344 @@ public class DataSourceConfiguration {
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_远程服务"><a class="anchor" href="#_远程服务"></a>5.1. 远程服务</h3>
+<div class="sect3">
+<h4 id="_rmi"><a class="anchor" href="#_rmi"></a>5.1.1. RMI</h4>
 
+</div>
 </div>
 <div class="sect2">
 <h3 id="_使用spring_mvc创建rest_api"><a class="anchor" href="#_使用spring_mvc创建rest_api"></a>5.2. 使用Spring MVC创建REST API</h3>
+<div class="sect3">
+<h4 id="_创建第一个rest服务"><a class="anchor" href="#_创建第一个rest服务"></a>5.2.1. 创建第一个REST服务</h4>
+<div class="paragraph">
+<p>使用之前的Spring Web技术就可以用于创建REST API，不过传统的 Spring Web 返回内容为 HTML 格式，
+这不能满足大多数使用REST的场景（一般为JSON或XML），对返回内容的展现，Spring 提供了两个选择：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Content negotiation 内容协商，根据请求要求的返回内容格式选择视图</p>
+</li>
+<li>
+<p>Message conversion 消息转换，对 Controller 返回的对象进行转换</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_基于内容的视图展现"><a class="anchor" href="#_基于内容的视图展现"></a>基于内容的视图展现</h5>
+<div class="paragraph">
+<p>Spring 提供的视图解析器 <em>ContentNegotiatingViewResolver</em> 用于根据客户端请求的媒体类型来选择视图。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public ViewResolver cnViewResolver() {
+    return new ContentNegotiatingViewResolver();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>内容协商（content-negotiation）的第一步是弄清楚客户端所请求资源的展现格式。 <em>ContentNegotiatingViewResolver</em> 优先考虑 URL 中的文件扩展名，然后才是请求头中的 <em>Accept</em> ，比如 URL 结尾文件扩展名为 <code>.json</code> ，那么就被认为请求的媒体类型为 <code>application/json</code> 。</p>
+</div>
+<div class="paragraph">
+<p>如果扩展名和 <em>Accept</em> 都未奏效， <em>ContentNegotiatingViewResolver</em> 将返回默认内容类型（content type）  <code>/</code> 。</p>
+</div>
+<div class="paragraph">
+<p>决定类型后 <em>ContentNegotiatingViewResolver</em> 将视图的解析交由其他视图解析器来完成，并将这些视图解析器返回的视图放入候选列表中，最后根据内容类型遍历该列表来匹配出可以满足的视图。</p>
+</div>
+<div class="paragraph">
+<p>另外，媒体类型的选择过程可以通过定制 <em>ContentNegotiationManager</em> 来进行干涉：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>设置默认的内容类型</p>
+</li>
+<li>
+<p>指定通过某个请求参数来决定内容类型</p>
+</li>
+<li>
+<p>忽略 <em>Accept</em> 请求头</p>
+</li>
+<li>
+<p>将URL扩展映射为指定的媒体类型</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>ContentNegotiationManager</em> 可以通过三种方式来配置：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>直接声明一个类型为 <em>ContentNegotiationManager</em> 的Bean（不推荐）</p>
+</li>
+<li>
+<p>间接使用 <em>ContentNegotiationManagerFactoryBean</em> 创建Bean（推荐在XML配置中使用）</p>
+</li>
+<li>
+<p>重载 <code>WebMvcConfigurerAdapter.configureContentNegotiation()</code> 方法（推荐在Java配置中使用）</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>XML中如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;bean id="contentNegotiationManager"
+    class="org.springframework.http.ContentNegotiationManagerFactoryBean"
+    p:defaultContentType="application/json"&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Java中：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Override
+public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+    configurer.defaultContentType(MediaType.APPLICATION_JSON);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>配置好 <em>ContentNegotiationManager</em> 之后需要将其注入到 <em>ContentNegotiatingViewResolver</em> 的属性中：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+public ViewResolver cnViewResolver(ContentNegotiationManager cnm) {
+    ContentNegotiatingViewResolver cnvr = new ContentNegotiatingViewResolver();
+    cnvr.setContentNegotiationManager(cnm);
+    return cnvr;
+}
 
+// JSON视图
+@Bean
+public View spittles() {
+    return new MappingJackson2JsonView();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>ContentNegotiatingViewResolver</em> 的好处在于不用修改 Controller 层代码，不足的是，作为视图解析器，
+并不能决定 Controller 可以消费的内容类型（比如在客户端发送的数据为 JSON 或 XML 格式时）。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_使用_http_信息转换器"><a class="anchor" href="#_使用_http_信息转换器"></a>使用 HTTP 信息转换器</h5>
+<div class="paragraph">
+<p>信息转换直接将 Controller 返回的数据转换为客户端请求的类型。
+Spring 自带了许多信息转换器用于处理 “对象到展现（object-to-representation）” 类的需求。</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 70%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">信息转换器</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">AtomFeedHttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将 <a href="http://rometools.github.io/rome/" target="_blank">ROME</a> 框架中的 Feed 对象转为 Atom feeds（媒体类型为 <code>application/atom+xml</code> ）。当在 classpath 中检测到 ROME 库时自动注册。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">BufferedImageHttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将图片的二进制数据转为 <a href="http://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferedImage.html?is-external=true" target="_blank"><em>BufferedImage</em></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">ByteArrayHttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">读或写二进制数组。可读取任意媒体类型（ <code><strong>/</strong></code> ），返回 <code>application/
+octet-stream</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">FormHttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">将内容以 <code>application/x-www-form-urlencoded</code> 的媒体类型读取到 <code>MultiValueMap&lt;String,String&gt;</code> 中。
+同样也可以将 <code>MultiValueMap&lt;String,String&gt;</code> 以 <code>application/x-www-form-urlencoded</code> 的媒体类型写回，而
+<code>MultiValueMap&lt;String, Object&gt;</code> 则返回 <code>multipart/form-data</code> 的媒体类型</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Jaxb2RootElementHttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在xml和JAXB2注解的类之间转换。当在类路径中存在 Jaxb 2.x 时自动注册该转换器</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">MappingJackson2HttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在json和类或HashMap之间转换。当在类路径中存在 Jackson 2 JSON库时自动注册</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">RssChannelHttpMessageConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在 RSS 源和 Rome 中的 Channel 对象直接转换。当类路径中存在 Rome 库时自动注册</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>如果客户端请求中的 <em>Accept</em> 头信息表示可以处理 <code>application/json</code> ，Jackson JSON 库在类路径中，
+则 Controller 返回的对象将油 <em>MappingJacksonHttpMessageConverter</em> 转为 JSON 。</p>
+</div>
+<div class="paragraph">
+<p>有些转换器由Spring自动注册，无需配置，但依然得保证依赖的库在应用的 ClassPath 中可以找到。</p>
+</div>
+<div class="paragraph">
+<p>正常情况下 Controller 返回的对象会走 Model/View 处理流程，若要跳过转由信息转换器处理，
+需要在 Controller 方法上添加 <code>@ResponseBody</code> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(method=RequestMethod.GET, produces="application/json")     <i class="conum" data-value="1"></i><b>(1)</b>
+public @ResponseBody List&lt;Spittle&gt; spittles(                               <i class="conum" data-value="2"></i><b>(2)</b>
+    @RequestParam(value="max", defaultValue=MAX_LONG_AS_STRING) long max,
+    @RequestParam(value="count", defaultValue="20") int count) {
+    return spittleRepository.findSpittles(max, count);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>使用 <em>produces</em> 属性声明该方法将只处理 <em>Accept</em> 为 <code>application/json</code> 的请求</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>使用 <code>@ResponseBody</code> 后返回的 <code>List&lt;Spittle&gt;</code> 将由 <em>MappingJacksonHttpMessageConverter</em> 或 <em>MappingJackson2HttpMessageConverter</em> （会使用哪个取决于类路径下Jackson库的版本）转为 JSON 后返回</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring 中的信息转换器是可以双向转换的。正如可以用 <code>@ResponseBody</code> 应用转换器返回数据到客户端，
+也可以使用 <code>@RequestBody</code> 来让 Spring 选择信息转换器来处理客户端发送来的数据。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(method=RequestMethod.POST,consumes="application/json")
+public @ResponseBody
+    Spittle saveSpittle(@RequestBody Spittle spittle) {              <i class="conum" data-value="1"></i><b>(1)</b>
+    return spittleRepository.save(spittle);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>添加 <code>@RequestBody</code> 后 Spring 会根据请求中的 Content-Type 头信息来选择合适的转换器，
+将请求数据转为 <em>Spittle</em> 对象</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>在每个方法上添加 <code>@ResponseBody</code> 或 <code>@RequestBody</code> 是件很繁琐的事， Spring 4.0 新增 <code>@RestController</code> 代替 <code>@Controller</code> 用于解决这个问题。添加该注解后 Spring 会在所有的处理方法中使用信息转换器。</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_不止是提供资源"><a class="anchor" href="#_不止是提供资源"></a>5.2.2. 不止是提供资源</h4>
+<div class="paragraph">
+<p>一个设计良好的 REST API 可不是只在客户端和服务端直接传输数据，同样也会提供一些与数据相关的元数据信息。</p>
+</div>
+<div class="sect4">
+<h5 id="_返回错误信息"><a class="anchor" href="#_返回错误信息"></a>返回错误信息</h5>
+<div class="paragraph">
+<p>目前为止，我们的代码在未找到数据的情况下依旧会向客户端返回 200(OK) 的状态码以及一个空的响应体，而显然返回 404(Not Found) 才是合适的。</p>
+</div>
+<div class="paragraph">
+<p>Spring 提供了一些选择用于这类情况：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>使用 <code>@ResponseStatus</code> 指定返回的状态码</p>
+</li>
+<li>
+<p>控制器方法可以返回 <em>ResponseEntity</em> 以返回更多的元数据信息</p>
+</li>
+<li>
+<p>使用异常处理器专门处理这些错误的情况，而不用影响原来的控制器方法</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>除了 <code>@ResponseBody</code> ，控制器方法也可以返回 <em>ResponseEntity</em> 。
+<em>ResponseEntity</em> 中包含返回的对象数据以及元数据（比如响应头和状态码），比如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(value="/{id}", method=RequestMethod.GET)
+public ResponseEntity&lt;Spittle&gt; spittleById(@PathVariable long id) {
+    Spittle spittle = spittleRepository.findOne(id);
+    HttpStatus status = spittle != null ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+    return new ResponseEntity&lt;Spittle&gt;(spittle, status);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>ResponseEntity</em> 本身就相当于使用了 <code>@ResponseBody</code> ，所以其携带的数据也会自动被转换。</p>
+</div>
+<div class="paragraph">
+<p>结合使用异常处理器和 <code>@ResponseStatus</code> 注解修改后如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(value="/{id}", method=RequestMethod.GET)
+public Spittle spittleById(@PathVariable long id) {
+    Spittle spittle = spittleRepository.findOne(id);
+    if (spittle == null) { throw new SpittleNotFoundException(id); }
+    return spittle;
+}
+
+@ExceptionHandler(SpittleNotFoundException.class)
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public @ResponseBody Error spittleNotFound(SpittleNotFoundException e) {
+    long spittleId = e.getSpittleId();
+    return new Error(4, "Spittle [" + spittleId + "] not found");
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_设置响应头信息"><a class="anchor" href="#_设置响应头信息"></a>设置响应头信息</h5>
+<div class="paragraph">
+<p>在 REST 中保存数据成功后应该返回 201 (Created) ，并在响应头的 Loaction 头信息里返回创建资源的地址。</p>
+</div>
+<div class="paragraph">
+<p>状态码可以使用 <code>@ResponseStatus</code> 设置，而响应头信息则可以通过在 <em>ResponseEntity</em> 中设置 <em>HttpHeaders</em> ：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RequestMapping(method=RequestMethod.POST,consumes="application/json")
+public ResponseEntity&lt;Spittle&gt; saveSpittle(
+    @RequestBody Spittle spittle, UriComponentsBuilder ucb) {               <i class="conum" data-value="1"></i><b>(1)</b>
+
+    Spittle spittle = spittleRepository.save(spittle);
+    HttpHeaders headers = new HttpHeaders();
+    URI locationUri = ucb.path("/spittles/")
+        .path(String.valueOf(spittle.getId()))
+        .build()
+        .toUri();
+
+    headers.setLocation(locationUri);
+    ResponseEntity&lt;Spittle&gt; responseEntity = new ResponseEntity&lt;Spittle&gt;(
+        spittle, headers, HttpStatus.CREATED)
+    return responseEntity;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/util/UriComponentsBuilder.html" target="_blank"><em>UriComponentsBuilder</em></a> 由 Spring 提供，用于构建 URL</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_spring中的消息"><a class="anchor" href="#_spring中的消息"></a>5.3. Spring中的消息</h3>
@@ -3601,7 +4487,32 @@ public class DataSourceConfiguration {
 </div>
 <div class="sect2">
 <h3 id="_使用websocket和stomp发送消息"><a class="anchor" href="#_使用websocket和stomp发送消息"></a>5.4. 使用Websocket和STOMP发送消息</h3>
+<div class="paragraph">
+<p>WebSocket 是一种全双工的通信协议，它可以让服务端和客户端发送异步消息。</p>
+</div>
+<div class="paragraph">
+<p>Spring 4.0 新增了对WebSocket的支持，包括：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>一套底层的API用于发送和接收消息</p>
+</li>
+<li>
+<p>一套高级的API用于在Spring MVC的控制器（controller）中处理消息</p>
+</li>
+<li>
+<p>一个用于发送消息的模板</p>
+</li>
+<li>
+<p>支持SockJS，以应对在不支持websocket的浏览器、服务器、代理中使用的情况</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_使用spirng的底层websocket_api"><a class="anchor" href="#_使用spirng的底层websocket_api"></a>5.4.1. 使用Spirng的底层Websocket API</h4>
 
+</div>
 </div>
 <div class="sect2">
 <h3 id="_使用spring发送email"><a class="anchor" href="#_使用spring发送email"></a>5.5. 使用Spring发送Email</h3>
