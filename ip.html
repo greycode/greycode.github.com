@@ -72,7 +72,7 @@ function getIPs(callback) {
   };
 
   pc.createDataChannel("");
-  pc.createOffer({}).then(function (offer) {
+  pc.createOffer({iceRestart:true}).then(function (offer) {
     log('----create offer ----')
     return pc.setLocalDescription(offer);
   }).then(function () {
