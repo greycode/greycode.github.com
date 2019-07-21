@@ -49,7 +49,7 @@ function getIPs(callback){
 
     //add same stun server for chrome
     if(window.webkitRTCPeerConnection)
-        servers = {iceServers: [{urls: "stun:stun.services.mozilla.com"}]};
+        servers = {iceServers: [{urls: "stun:stun.qq.com:3478"}]};
 
     //construct a new RTCPeerConnection
     var pc = new RTCPeerConnection(servers, mediaConstraints);
