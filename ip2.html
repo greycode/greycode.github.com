@@ -36,7 +36,7 @@ function getIPs(callback) {
   var servers = undefined;
 
   if (window.webkitRTCPeerConnection)
-    servers = {iceServers: [{urls: "stun.sipnet.net:3478"}]};
+    servers = {iceServers: [{urls: "stun2.l.google.com:19302"}]};
 
   pc = new RTCPeerConnection(servers, mediaConstraints);
   if (pc) log('pc != null')
